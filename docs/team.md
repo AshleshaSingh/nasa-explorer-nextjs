@@ -30,6 +30,7 @@ Roles are intentionally rotated between Sprint 1 and Sprint 2 to ensure everyone
 | **Backend / API** | Member 1, Member 5 | `lib/nasa.ts`, `/api/apod` |
 | **Frontend / UI** | Member 2 | `/apod` form page + loading/error states |
 | **Testing** | Member 3, Member 1 | Unit test for `fetchApod`, integration test for `/api/apod` |
+| **TypeScript Setup** | Member 3 | Set up TS interfaces, create `/types` folder, add APOD types |
 | **Project Board Setup** | Member 5 | GitHub Project Board, task setup, assignments |
 | **Environment Setup** | Member 5 | `.env.example`, env setup instructions |
 | **Documentation (Sprint 1)** | Member 5 | `/docs/team.md`, `/docs/api-notes.md`, `CONTRIBUTING.md` |
