@@ -13,7 +13,7 @@ Roles are intentionally rotated between Sprint 1 and Sprint 2 to ensure everyone
 
 | Name           | GitHub Username | Sprint 1 Role                              | Sprint 2 Role                             |
 |----------------|-----------------|---------------------------------------------|--------------------------------------------|
-| **Member 1**      | @github-user-1  | Backend Lead (APOD API) + Unit Testing      | Frontend Feature (Search Page) + Docs      |
+| **Khushi Jani**      | @kbjani  | Backend Lead (APOD API) + Unit Testing      | Frontend Feature (Search Page) + Docs      |
 | **Daniel Ramirez**| @ranieldamirez  | Frontend Lead (APOD UI) + Manual Testing    | Validation + Integration Testing           |
 | **Member 3**    | @github-user-3  | Testing Lead + TypeScript Setup             | UI Enhancements + Final Testing            |
 | **Member 4**       | @github-user-4  | Environment Setup + Deployment Placeholder  | Deployment + Production Testing + Docs     |
