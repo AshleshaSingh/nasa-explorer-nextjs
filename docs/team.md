@@ -11,13 +11,13 @@ Roles are intentionally rotated between Sprint 1 and Sprint 2 to ensure everyone
 
 ## Team Overview
 
-| Name           | GitHub Username | Sprint 1 Role                              | Sprint 2 Role                             |
-|----------------|-----------------|---------------------------------------------|--------------------------------------------|
-| **Khushi Jani**      | @kbjani  | Backend Lead (APOD API) + Unit Testing      | Frontend Feature (Search Page) + Docs      |
-| **Daniel Ramirez**| @ranieldamirez  | Frontend Lead (APOD UI) + Manual Testing    | Validation + Integration Testing           |
-| **Member 3**    | @github-user-3  | Testing Lead + TypeScript Setup             | UI Enhancements + Final Testing            |
-| **Member 4**       | @github-user-4  | Environment Setup + Deployment Placeholder  | Deployment + Production Testing + Docs     |
-| **Member 5**        | @your-github-id | API-UI Integration + Integration Testing    | Shared UI, UX Polish + Final Docs/Slides   |
+|  Member    | Name              | GitHub Username | Sprint 1 Role                              | Sprint 2 Role                          |
+|------------|-------------------|----------------|--------------------------------------------|----------------------------------------|
+|**Member 1**| **Khushi Jani**    | @kbjani        | Backend Lead (APOD API) + Unit Testing     | Frontend Feature (Search Page) + Docs  |
+|**Member 2**| **Daniel Ramirez** | @ranieldamirez | Frontend Lead (APOD UI) + Manual Testing   | Validation + Integration Testing       |
+|**Member 3**| **Member 3**      | @github-user-3 | Testing Lead + TypeScript Setup            | UI Enhancements + Final Testing        |
+|**Member 4**| **Member 4**      | @github-user-4 | Environment Setup + Deployment Placeholder | Deployment + Production Testing + Docs |
+|**Member 5**| **Ashlesha Singh** | @AshleshaSingh | API-UI Integration + Integration Testing   | Shared UI, UX Polish + Final Docs/Slides |
 
 ---
 
