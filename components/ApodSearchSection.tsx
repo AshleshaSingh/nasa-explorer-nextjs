@@ -13,6 +13,8 @@ import {
 } from "@nextui-org/react";
 import type { ApodResponse, ApodFormData } from "@/types/apod";
 
+import { ErrorCard } from "@/components/error";
+
 export function ApodSearchSection() { // this function stores whatever the user typed into the form (date).
   const [form, setForm] = useState<ApodFormData>({ date: "" });
 
@@ -117,16 +119,11 @@ export function ApodSearchSection() { // this function stores whatever the user 
             </Button>
           </form>
 
-          {/* error UI: shows under the form only when a error popped up */}
+          {/* error UI using the universal card */}
           {error && (
-            <Card
-              className="mt-4 border border-danger-300 bg-danger-50"
-              shadow="none"
-            >
-              <CardBody className="text-sm text-danger-700">
-                {error}
-              </CardBody>
-            </Card>
+            <div className="mt-4">
+                <ErrorCard message = {error} />
+            </div>
           )}
         </CardBody>
       </Card>
