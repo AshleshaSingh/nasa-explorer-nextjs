@@ -1,41 +1,58 @@
-// lib/nasa.ts
+/// lib/nasa.ts
 import "server-only";
-import type { ApodResponse } from "@/types/nasa";
+import type { ApodResult } from "@/types/nasa";
 
-const NASA_API_BASE = process.env.NASA_API_BASE ?? "https://api.nasa.gov";
+const BASE_URL = process.env.NASA_API_BASE ?? "https://api.nasa.gov";
+//const API_KEY = process.env.NASA_API_KEY;
 
 /**
- * Fetch APOD (Astronomy Picture of the Day)
- * Always runs on the server (server-only)
+ * Calls NASA's APOD API on the server side.
+ *
+ * Supports:
+ *  - date: specific date in YYYY-MM-DD format
+ *  - count: number of random APODs
+ *  - thumbs: request thumbnails for videos
  */
-export async function fetchApod(date?: string): Promise<ApodResponse> {
-  const apiKey = process.env.NASA_API_KEY;
+export async function fetchApod(params: {
+  date?: string;
+  count?: number;
+  thumbs?: boolean;
+}): Promise<ApodResult> {
 
-  if (!apiKey) {
-    throw new Error("NASA_API_KEY is not set in environment variables");
+  const API_KEY = process.env.NASA_API_KEY;
+  if (!API_KEY) {
+    throw new Error("NASA_API_KEY is not set in environment variables.");
   }
 
-  // Build URL
-  const url = new URL(`${NASA_API_BASE}/planetary/apod`);
-  url.searchParams.set("api_key", apiKey);
+  const url = new URL("/planetary/apod", BASE_URL);
+  url.searchParams.set("api_key", API_KEY);
 
-  if (date) {
-    url.searchParams.set("date", date);
+  if (params.date) {
+    url.searchParams.set("date", params.date);
+  }
+  if (params.count) {
+    url.searchParams.set("count", String(params.count));
+  }
+  if (params.thumbs) {
+    url.searchParams.set("thumbs", "true");
   }
 
-  // Call NASA API
-  const res = await fetch(url.toString());
+  const res = await fetch(url.toString(), {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
-    throw new Error(`Failed to fetch APOD: ${res.status} ${res.statusText}`);
+    throw new Error(`APOD API error: ${res.status} ${res.statusText}`);
   }
 
-  const json = (await res.json()) as ApodResponse;
+  const data = (await res.json()) as ApodResult;
 
-  // Basic field validation
-  if (!json.date || !json.title || !json.url || !json.media_type) {
-    throw new Error("APOD response is missing required fields");
+  // Basic sanity check for object case. For array, check first element.
+  const sample = Array.isArray(data) ? data[0] : data;
+
+  if (!sample?.date || !sample?.title || !sample?.url || !sample?.media_type) {
+    throw new Error("APOD response is missing required fields.");
   }
 
-  return json;
+  return data;
 }
