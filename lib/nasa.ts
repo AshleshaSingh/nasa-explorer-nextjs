@@ -58,4 +58,3 @@ export async function fetchApod(params: {
 
   return data;
 }
-}
