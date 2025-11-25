@@ -1,8 +1,10 @@
+/// lib/nasa.ts
 // lib/nasa.ts
 import "server-only";
 import type { ApodResult } from "@/types/nasa";
 
 const BASE_URL = process.env.NASA_API_BASE ?? "https://api.nasa.gov";
+//const API_KEY = process.env.NASA_API_KEY;
 const API_KEY = process.env.NASA_API_KEY;
 
 /**
@@ -18,6 +20,8 @@ export async function fetchApod(params: {
   count?: number;
   thumbs?: boolean;
 }): Promise<ApodResult> {
+
+  const API_KEY = process.env.NASA_API_KEY;
   if (!API_KEY) {
     throw new Error("NASA_API_KEY is not set in environment variables.");
   }
@@ -53,4 +57,5 @@ export async function fetchApod(params: {
   }
 
   return data;
+}
 }

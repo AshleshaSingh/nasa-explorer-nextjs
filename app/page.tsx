@@ -7,8 +7,12 @@ import { siteConfig } from "@/config/site";
 import { title, subtitle } from "@/components/primitives";
 import { GithubIcon } from "@/components/icons";
 
+// import APOD search UI
+import { ApodSearchSection } from "@/components/ApodSearchSection";
+
 export default function Home() {
   return (
+    <main className="flex flex-col items-center justify-center px-4 py-8 md:py-10">
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       <div className="inline-block max-w-xl text-center justify-center">
         <span className={title()}>Make&nbsp;</span>
@@ -52,5 +56,11 @@ export default function Home() {
         </Snippet>
       </div>
     </section>
+
+    {/* adding APOD Form UI */}
+    <section className="w-full max-w-4xl mt-12">
+      <ApodSearchSection />
+    </section>
+  </main>
   );
 }
