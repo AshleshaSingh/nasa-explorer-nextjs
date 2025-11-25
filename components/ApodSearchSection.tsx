@@ -10,8 +10,9 @@ import {
   Button,
   Spinner,
   Image,
-} from "@nextui-org/react";
-import type { ApodResponse, ApodFormData } from "@/types/apod";
+} from "@heroui/react";
+import type { ApodResponse} from "@/types/nasa";
+import type { ApodFormData } from "@/types/apod";
 
 import { ErrorCard } from "@/components/error";
 
@@ -29,7 +30,7 @@ export function ApodSearchSection() { // this function stores whatever the user 
   };
 
   // front-end validation before sending to backend
-  const validateForm = (): string | null => {
+  const validateForm = (data: ApodFormData): string | null => {
     if (!form.date) return "Please select a date.";
     return null; // no issues
   };
@@ -41,7 +42,7 @@ export function ApodSearchSection() { // this function stores whatever the user 
     setResult(null);
 
     // run validation before calling backend
-    const validationError = validateForm();
+    const validationError = validateForm(form);
     if (validationError) {
       setError(validationError);
       return; // don't continue
@@ -54,15 +55,10 @@ export function ApodSearchSection() { // this function stores whatever the user 
       const res = await fetch(`/api/apod?date=${form.date}`);
 
       // read backend's response
-      const data = await res.json();
-
-      // if backend has an error
-      if (!res.ok) {
-        setError(data.error || "Something went wrong fetching APOD.");
-      } else {
-        // it worked! show the APOD on the screen
-        setResult(data as ApodResponse);
-      }
+      const json = await res.json();
+      if (!json.ok) { setError(json.error); return; }
+      const apod = Array.isArray(json.data) ? json.data[0] : json.data;
+      setResult(apod);
     } catch (err) {
       // internet issue or fetch error
       console.error(err);
@@ -153,7 +149,6 @@ export function ApodSearchSection() { // this function stores whatever the user 
             <h2 className="text-lg font-semibold">{result.title}</h2>
             <p className="text-xs text-default-400">
               {result.date}
-              {result.copyright ? ` • © ${result.copyright}` : ""}
             </p>
           </CardHeader>
 
