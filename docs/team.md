@@ -11,13 +11,13 @@ Roles are intentionally rotated between Sprint 1 and Sprint 2 to ensure everyone
 
 ## Team Overview
 
-| Name           | GitHub Username | Sprint 1 Role                              | Sprint 2 Role                             |
-|----------------|-----------------|---------------------------------------------|--------------------------------------------|
-| **Member 1**      | @github-user-1  | Backend Lead (APOD API) + Unit Testing      | Frontend Feature (Search Page) + Docs      |
-| **Daniel Ramirez**| @ranieldamirez  | Frontend Lead (APOD UI) + Manual Testing    | Validation + Integration Testing           |
-| **Member 3**    | @github-user-3  | Testing Lead + TypeScript Setup             | UI Enhancements + Final Testing            |
-| **Member 4**       | @github-user-4  | Environment Setup + Deployment Placeholder  | Deployment + Production Testing + Docs     |
-| **Member 5**        | @your-github-id | API-UI Integration + Integration Testing    | Shared UI, UX Polish + Final Docs/Slides   |
+| Member | Name              | GitHub Username   | Sprint 1 Role                                        | Sprint 2 Role                                                    |
+|--------|--------------------|-------------------|-------------------------------------------------------|------------------------------------------------------------------|
+| **Member 1** | **Khushi Jani**      | @kbjani | Backend Lead (APOD API) + Unit Testing Support       | UI Enhancements (Skeletons, Empty States) + Final QA            |
+| **Member 2** | **Daniel Ramirez**   | @ranieldamirez | Frontend Lead (APOD UI) + UI Documentation           | Backend Validation (Zod + RHF) + Integration Testing            |
+| **Member 3** | **Fnu Swati**        | @stomarp | Testing Lead + TypeScript Setup                      | Feature Dev (NASA Image Search + Pagination) + Documentation    |
+| **Member 4** | **John Morales**     | @github-user-4 | Error Boundary UI              | Deployment Lead (Render) + Production QA + Deployment Docs      |
+| **Member 5** | **Ashlesha Singh**   | @AshleshaSingh | Project Board Setup + API–UI Integration + Sprint 1 Documentation | Feature Dev (Search UI Shared) + README Polish + Presentation   |
 
 ---
 
@@ -27,23 +27,27 @@ Roles are intentionally rotated between Sprint 1 and Sprint 2 to ensure everyone
 
 | Area | Member(s) Responsible | Deliverables |
 |------|------------------------|--------------|
-| Backend / API | Member 1, Member 5 | `lib/nasa.ts`, `/api/apod` route |
-| Frontend / UI | Member 2 | `/apod` form page + loading/error UI |
-| Testing | Member 3, Member 5 | Unit test for `fetchApod`, integration test for `/api/apod` |
-| Environment & Project Setup | Member 4 | `.env.example`, `.env.local`, nav links |
-| Documentation | Member 5, Member 4, Member 2 | `/docs/team.md`, `/docs/api-notes.md`, UI usage guide |
+| **Backend / API** | Member 1, Member 5 | `lib/nasa.ts`, `/api/apod` |
+| **Frontend / UI** | Member 2 | `/apod` form page + loading/error states |
+| **Testing** | Member 3, Member 1 | Unit test for `fetchApod`, integration test for `/api/apod` |
+| **TypeScript Setup** | Member 3 | Set up TS interfaces, create `/types` folder, add APOD types |
+| **Project Board Setup** | Member 5 | GitHub Project Board, task setup, assignments |
+| **Environment Setup** | Member 5 | `.env.example`, env setup instructions |
+| **Documentation (Sprint 1)** | Member 5 | `/docs/team.md`, `/docs/api-notes.md`, `CONTRIBUTING.md` |
+| **Error Handling UI** | Member 4 | Error boundary UI + fallback components |
+
 
 ---
 
-### Sprint 2 – Testing, UI Polish, Deployment (Roles Rotated)
+### Sprint 2 – Testing, UI Polish, Deployment (Final Balanced Version)
 
 | Area | Member(s) Responsible | Deliverables |
 |------|------------------------|--------------|
-| Feature Dev (Search UI) | Member 1 | NASA Image Search UI + pagination |
-| Validation & Form UX | Member 2 | Zod + React Hook Form + integration test |
-| UI Enhancements | Member 3 | Loading skeletons, empty/error states |
-| Deployment & QA | Member 4 | Deploy to Render, production testing, deployment docs |
-| Final Documentation & Demo | Member 5 | README polish, demo slides, team presentation |
+| **Feature Dev (Image Search UI)** | Member 3, Member 5 | NASA Image Search page, shared UI components, pagination |
+| **Validation & Form UX** | Member 2 | Zod + React Hook Form validation + integration tests |
+| **UI Enhancements** | Member 1 | Skeleton loaders, empty/loader states, refined UI |
+| **Deployment & Production QA** | Member 4 | Render deployment, deployment docs, production API testing |
+| **Final Documentation & Demo** | Member 5 | Final README polish, presentation slides, UX polish |
 
 ---
 

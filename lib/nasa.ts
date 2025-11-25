@@ -1,9 +1,11 @@
 /// lib/nasa.ts
+// lib/nasa.ts
 import "server-only";
 import type { ApodResult } from "@/types/nasa";
 
 const BASE_URL = process.env.NASA_API_BASE ?? "https://api.nasa.gov";
 //const API_KEY = process.env.NASA_API_KEY;
+const API_KEY = process.env.NASA_API_KEY;
 
 /**
  * Calls NASA's APOD API on the server side.
@@ -55,4 +57,5 @@ export async function fetchApod(params: {
   }
 
   return data;
+}
 }
