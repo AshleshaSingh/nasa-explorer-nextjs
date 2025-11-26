@@ -1,7 +1,7 @@
 // app/api/apod/route.ts
 import { NextResponse } from "next/server";
-import { fetchApod } from "@/lib/nasa";
-import type { ApodResult } from "@/types/nasa";
+import { fetchApod } from "../../../lib/nasa";
+import type { ApodResult } from "../../../types/nasa";
 
 export async function GET(req: Request) {
   try {
@@ -10,6 +10,7 @@ export async function GET(req: Request) {
     const date = searchParams.get("date") ?? undefined;
     const countParam = searchParams.get("count");
     const count = countParam ? Number(countParam) : undefined;
+    const thumbs = true;
 
     if (countParam && Number.isNaN(count)) {
       return NextResponse.json(
@@ -28,7 +29,7 @@ export async function GET(req: Request) {
     const data: ApodResult = await fetchApod({
       date,
       count,
-      thumbs: true,
+      thumbs
     });
 
     return NextResponse.json(
