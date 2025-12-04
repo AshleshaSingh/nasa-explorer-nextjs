@@ -48,24 +48,53 @@ export default function NasaImageSearchPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Tracks which page of results we are currently on.
+  const [page, setPage] = useState(1);
+
+  // Indicates when the "Load more" button is fetching more results.
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  // Controls whether we should show the "Load more" button.
+  const [hasMore, setHasMore] = useState(true);
+
   /**
-   * Calls our backend route /api/images for page 1.
-   * This is the main search function (no pagination yet).
+   * Calls our backend route /api/images.
+   *
+   * Supports two modes:
+   *  - "reset": start a new search from page 1 (replaces items).
+   *  - "append": load the next page and append to existing items.
    */
-  const runSearch = async () => {
-    // Frontend guard: require a non-empty query
-    if (!query.trim()) {
+  const runSearch = async (mode: "reset" | "append" = "reset") => {
+    const trimmedQuery = query.trim();
+
+    // Frontend guard: require a non-empty query for both modes.
+    if (!trimmedQuery) {
       setError("Please enter a search term.");
       return;
     }
 
+    // Clear any previous error before a new request.
     setError(null);
-    setLoading(true);
+
+    // Determine which page we are going to request.
+    const targetPage = mode === "reset" ? 1 : page + 1;
+
+    // When starting a fresh search, show the main loading state.
+    // When appending, show a separate "loading more" state.
+    if (mode === "reset") {
+      setLoading(true);
+      setItems([]);        // clear previous results so we don't flash stale data
+      setHasMore(true);    // assume there may be more until we know otherwise
+      setPage(1);
+    } else {
+      setIsLoadingMore(true);
+    }
 
     try {
+      // Build query string for API route.
       const params = new URLSearchParams({
-        query: query.trim(),
-        page: "1", // only first page for this task
+        query: trimmedQuery,
+        page: String(targetPage),
       });
 
       const res = await fetch(`/api/images?${params.toString()}`);
@@ -74,30 +103,69 @@ export default function NasaImageSearchPage() {
         | NasaImageSearchResult
         | { message?: string };
 
+      // Handle HTTP error responses with a friendly message for the user.
       if (!res.ok) {
         const msg =
           (data as any).message ??
           "Something went wrong while fetching NASA images.";
         setError(msg);
-        setItems([]);
-        setTotalHits(null);
+
+        // In case of failure, do not keep partial results for a new search.
+        if (mode === "reset") {
+          setItems([]);
+          setTotalHits(null);
+          setHasMore(false);
+        }
+
         return;
       }
 
+      // Successful response: extract items and metadata.
       const result = data as NasaImageSearchResult;
       const newItems = result.collection.items ?? [];
-
-      // Save results and optional total hits
-      setItems(newItems);
       const hits = result.collection.metadata?.total_hits;
-      setTotalHits(typeof hits === "number" ? hits : null);
+
+      // Append or replace items depending on mode.
+      setItems((prev) =>
+        mode === "append" ? [...prev, ...newItems] : newItems,
+      );
+
+      // Keep track of total hits if provided.
+      const numericHits =
+        typeof hits === "number" && !Number.isNaN(hits) ? hits : null;
+      setTotalHits(numericHits);
+
+      // Update current page because the request completed successfully.
+      setPage(targetPage);
+
+      // Determine whether there are more items to load:
+      //  - if we know total_hits, compare against items length
+      //  - otherwise, assume "no more" when NASA returns an empty page
+      setHasMore(() => {
+        if (numericHits != null) {
+          const totalLoaded =
+            (mode === "append" ? items.length : 0) + newItems.length;
+          return totalLoaded < numericHits;
+        }
+        // Fallback: if the current page returns zero items, stop paginating.
+        return newItems.length > 0;
+      });
     } catch (err) {
       console.error(err);
       setError("Network error. Please try again.");
-      setItems([]);
-      setTotalHits(null);
+
+      if (mode === "reset") {
+        setItems([]);
+        setTotalHits(null);
+        setHasMore(false);
+      }
     } finally {
-      setLoading(false);
+      // Turn off the appropriate loading state.
+      if (mode === "reset") {
+        setLoading(false);
+      } else {
+        setIsLoadingMore(false);
+      }
     }
   };
 
@@ -106,7 +174,17 @@ export default function NasaImageSearchPage() {
    */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    void runSearch();
+
+    // When the user submits the form, always start a fresh search from page 1.
+    void runSearch("reset");
+  };
+
+  /**
+   * Triggered when the user clicks "Load more".
+   * Requests the next page and appends the results to the grid.
+   */
+  const handleLoadMore = () => {
+    void runSearch("append");
   };
 
   const hasResults = items.length > 0;
@@ -269,6 +347,34 @@ export default function NasaImageSearchPage() {
               );
             })}
           </div>
+
+          {/* Pagination controls */}
+          {hasMore && (
+            <div className="flex justify-center mt-4">
+              <Button
+                variant="bordered"
+                color="primary"
+                onPress={handleLoadMore}
+                isDisabled={isLoadingMore}
+              >
+                {isLoadingMore ? (
+                  <div className="flex items-center gap-2">
+                    <Spinner size="sm" />
+                    <span>Loading more…</span>
+                  </div>
+                ) : (
+                  "Load more"
+                )}
+              </Button>
+            </div>
+          )}
+
+          {/* Optional message when there is nothing more to load */}
+          {!hasMore && (
+            <p className="text-xs text-default-500 text-center mt-2">
+              You&apos;ve reached the end of the results.
+            </p>
+          )}
         </section>
       )}
     </main>
