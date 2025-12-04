@@ -27,3 +27,54 @@ export type ApodResult = ApodResponse | ApodResponse[];
 export interface ApodFormData {
   date: string;
 }
+
+/**
+ * Metadata for a single NASA image record.
+ * We only keep the fields we actually display in the UI.
+ */
+export interface NasaImageData {
+  title: string;
+  description?: string;
+  date_created?: string;
+  nasa_id: string;
+}
+
+/**
+ * Link information for a NASA image record.
+ * Usually contains thumbnail or image URLs.
+ */
+export interface NasaImageLink {
+  href: string;    // Direct URL to image/thumbnail
+  rel?: string;    // e.g. "preview"
+  render?: string; // e.g. "image"
+}
+
+/**
+ * A single item in the NASA image collection.
+ * It includes metadata ("data") and links ("links").
+ */
+export interface NasaImageItem {
+  data: NasaImageData[];
+  links?: NasaImageLink[];
+}
+
+/**
+ * The "collection" object returned by NASA's image search endpoint.
+ */
+export interface NasaImageCollection {
+  items: NasaImageItem[];
+  metadata?: {
+    total_hits?: number;
+  };
+  links?: {
+    rel: string;
+    href: string;
+  }[];
+}
+
+/**
+ * Full NASA image search response.
+ */
+export interface NasaImageSearchResult {
+  collection: NasaImageCollection;
+}

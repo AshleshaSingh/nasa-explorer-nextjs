@@ -17,6 +17,10 @@ export const siteConfig = {
       href: "/apod",
     },
     {
+      label: "Images",
+      href: "/images",
+    },
+    {
       label: "Blog",
       href: "/blog",
     },
