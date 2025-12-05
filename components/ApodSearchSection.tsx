@@ -48,7 +48,7 @@ export function ApodSearchSection() { // this function stores whatever the user 
       return;
     }
 
-    setLoading(true); // turn on spinner
+    setLoading(true); // turn on skeleton loading state
 
     try {
       // send a request to backend route at /api/apod
