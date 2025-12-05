@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Card, CardBody, CardHeader, Button } from "@nextui-org/react";
 
 // reusable error UI to be dropped inside any page/form when something goes wrong.

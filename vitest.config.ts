@@ -1,12 +1,18 @@
 // vitest.config.ts
 //
-// Simple Vitest config for server-side tests.
+// simple Vitest config for server-side tests.
 
 import { defineConfig } from "vitest/config";
+import path from "node:path";
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "."),
+    },
+  },
   test: {
-    environment: "node",
+    environment: "jsdom",
     globals: true,
     setupFiles: ["./tests/setup.ts"],
   },
