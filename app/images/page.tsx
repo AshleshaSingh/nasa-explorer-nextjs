@@ -37,6 +37,22 @@ function getThumbnailUrl(item: NasaImageItem): string | undefined {
 export default function NasaImageSearchPage() {
   // Search term entered by the user
   const [query, setQuery] = useState("");
+  const [queryError, setQueryError] = useState<string | null>(null); // NEW
+
+  // derived validity flag
+  const isQueryValid = query.trim().length > 0;
+
+
+  // handle input changes and clear/set errors live
+  const handleQueryChange = (value: string) => {
+    setQuery(value);
+
+    if (value.trim().length === 0) {
+      setQueryError("Please enter a search term.");
+    } else {
+      setQueryError(null);
+    }
+  };
 
   // List of image items returned from the API
   const [items, setItems] = useState<NasaImageItem[]>([]);
@@ -57,6 +73,9 @@ export default function NasaImageSearchPage() {
   // Controls whether we should show the "Load more" button.
   const [hasMore, setHasMore] = useState(true);
 
+  // track if the user has actually triggered a search
+  const [hasSearched, setHasSearched] = useState(false);
+
   /**
    * Calls our backend route /api/images.
    *
@@ -74,6 +93,7 @@ export default function NasaImageSearchPage() {
     }
 
     // Clear any previous error before a new request.
+    setQueryError(null);
     setError(null);
 
     // Determine which page we are going to request.
@@ -82,6 +102,7 @@ export default function NasaImageSearchPage() {
     // When starting a fresh search, show the main loading state.
     // When appending, show a separate "loading more" state.
     if (mode === "reset") {
+      setHasSearched(true);
       setLoading(true);
       setItems([]);        // clear previous results so we don't flash stale data
       setHasMore(true);    // assume there may be more until we know otherwise
@@ -175,6 +196,12 @@ export default function NasaImageSearchPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // block submit if query is invalid
+    if (!isQueryValid) {
+      setQueryError("Please enter a search term.");
+      return;
+    }
+
     // When the user submits the form, always start a fresh search from page 1.
     void runSearch("reset");
   };
@@ -224,8 +251,10 @@ export default function NasaImageSearchPage() {
             //   labelPlacement="outside" // Ensure the label is outside/above the input
               placeholder="e.g. galaxy, nebula, moon"
               value={query}
-              onValueChange={setQuery}
+              onValueChange={handleQueryChange}
               isRequired
+              isInvalid={!!queryError}
+              errorMessage = {queryError ?? undefined}
               variant="flat"
               className="md:max-w-md"
             //   classNames={{
@@ -240,7 +269,7 @@ export default function NasaImageSearchPage() {
               type="submit"
               color="primary"
               className="md:w-auto w-full"
-              isDisabled={loading}
+              isDisabled={!isQueryValid || loading}
             >
               {loading ? (
                 <div className="flex items-center gap-2">
@@ -283,19 +312,18 @@ export default function NasaImageSearchPage() {
       )}
 
       {/* Empty state (only after user has tried searching) */}
-      {!loading && !error && !hasResults && query.trim() !== "" && (
+      {!loading && !error && !hasResults && hasSearched && (
         <Card>
           <CardBody className="text-sm text-default-500">
-            No results found for <span className="font-semibold">
-              {query.trim()}
-            </span>
-            . Try a different keyword.
+            No results found for{" "}
+            <span className="font-semibold">{query.trim()}</span>. Try a
+            different keyword.
           </CardBody>
         </Card>
       )}
 
-      {/* Initial hint (before any search) */}
-      {!loading && !error && !hasResults && query.trim() === "" && (
+      {/* Initial hint (before any search has been run) */}
+      {!loading && !error && !hasResults && !hasSearched && (
         <Card>
           <CardBody className="text-sm text-default-500">
             Start by entering a search term above and clicking{" "}
@@ -304,6 +332,7 @@ export default function NasaImageSearchPage() {
           </CardBody>
         </Card>
       )}
+
 
       {/* Results grid */}
       {hasResults && (
