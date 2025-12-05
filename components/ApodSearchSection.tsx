@@ -8,45 +8,17 @@ import {
   CardFooter,
   Input,
   Button,
-  Spinner,
   Image,
 } from "@heroui/react";
 import type { ApodResponse} from "@/types/nasa";
 import type { ApodFormData } from "@/types/apod";
+import { ApodSkeleton } from "./ApodSkeleton";
+import { ApodEmptyCard } from "./ApodEmptyCard";
+import { ApodErrorCard } from "./ApodErrorCard";
 
-import { ErrorCard } from "@/components/error";
-
-// Skeleton Loader Component
-// To replace small button spinner and large card spinner
-// Skeleton includes placeholders for title, data, image, explanation and div structures
-function ApodSkeleton() {
-  return (
-    <Card>
-      <CardBody className="flex flex-col gap-6 animate-pulse py-6">
-
-        {/* title skeleton */}
-        <div className="h-6 w-48 bg-default-300 rounded-md" />
-
-        {/* date skeleton */}
-        <div className="h-4 w-32 bg-default-200 rounded-md" />
-
-        {/* image skeleton */}
-        <div className="w-full h-[350px] bg-default-300 rounded-xl" />
-
-        {/* explanation skeleton */}
-        <div className="flex flex-col gap-2">
-          <div className="h-4 w-full bg-default-200 rounded-md" />
-          <div className="h-4 w-5/6 bg-default-200 rounded-md" />
-          <div className="h-4 w-4/6 bg-default-200 rounded-md" />
-        </div>
-      </CardBody>
-    </Card>
-  );
-}
 
 export function ApodSearchSection() { // this function stores whatever the user typed into the form (date).
   const [form, setForm] = useState<ApodFormData>({ date: "" });
-
   // UI states
   const [loading, setLoading] = useState(false); // controls spinner + disabling button
   const [error, setError] = useState<string | null>(null); // error message display
@@ -73,7 +45,7 @@ export function ApodSearchSection() { // this function stores whatever the user 
     const validationError = validateForm(form);
     if (validationError) {
       setError(validationError);
-      return; // don't continue
+      return;
     }
 
     setLoading(true); // turn on spinner
@@ -122,6 +94,7 @@ export function ApodSearchSection() { // this function stores whatever the user 
               isRequired // adds a * and required styling
               variant="bordered"
               className="md:max-w-xs"
+              max={new Date().toISOString().split("T")[0]} // can't pick future
             />
 
             {/* submit button 
@@ -137,28 +110,17 @@ export function ApodSearchSection() { // this function stores whatever the user 
               Get APOD
             </Button>
           </form>
-
-          {/* error UI using the universal card */}
-          {error && (
-            <div className="mt-4">
-                <ErrorCard message = {error} />
-            </div>
-          )}
         </CardBody>
       </Card>
 
-      {/* loading state, show big centered spinner 
-      UPDATED to replace loading spinner card with skeleton*/}
+      {/* Loading Skeleton */}
       {loading && !result && <ApodSkeleton />}
 
-      {/* empty state/before any search */}
-      {!loading && !error && !result && (
-        <Card>
-          <CardBody className="text-sm text-default-500">
-            No APOD loaded yet — choose a date and hit submit!
-          </CardBody>
-        </Card>
-      )}
+      {/* Branded Empty State */}
+      {!loading && !error && !result && <ApodEmptyCard />}
+
+      {/* Branded Error State */}
+      {error && <ApodErrorCard message={error} />}
 
       {/* results card: shows NASA APOD data */}
       {result && (
