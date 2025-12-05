@@ -147,6 +147,53 @@ cp .env.example .env.local   # add NASA_API_KEY
 pnpm dev                     # run locally at http://localhost:3000
 ```
 
+# Deployment (Render.io)
+Our production app is deployed on Render.
+
+## Production URL:
+https://group-project-group1-nasa-api.onrender.com
+
+## Render Service Configuration
+Service type: Web Service
+Language: Node
+Branch: main
+# Build command:
+```bash
+npm install && npm run build
+```
+# Start command:
+```bash
+npm run start
+```
+Instance type: Free (512 MB RAM, 0.1 CPU) — suitable for this class project.
+
+# Environment Variables on Render
+We do not commit real secrets into GitHub.
+Instead, we configure them in Render under Environment → Environment Variables:
+  `NASA_API_KEY → our real NASA API key`
+
+  `NASA_API_BASE → https://api.nasa.gov`
+
+
+These are read on the server only via process.env in `lib/nasa.ts`, so the key is not exposed to the browser.
+Example from `lib/nasa.ts`:
+```bash
+const BASE_URL = process.env.NASA_API_BASE ?? "https://api.nasa.gov";
+const API_KEY = process.env.NASA_API_KEY;
+```
+
+# How to Redeploy
+Any push to the main branch triggers an automatic deploy on Render:
+1. Commit + push changes to main
+2. Render detects the commit and runs:
+  `npm install && npm run build`
+  `npm run start`
+
+3. You can watch logs and deploy status on the Render dashboard.
+
+If needed, you can also trigger a Manual Deploy from the Render UI.
+
+
 
 # Useful References
 - Resource	Link
