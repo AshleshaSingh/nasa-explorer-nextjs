@@ -16,6 +16,34 @@ import type { ApodFormData } from "@/types/apod";
 
 import { ErrorCard } from "@/components/error";
 
+// Skeleton Loader Component
+// To replace small button spinner and large card spinner
+// Skeleton includes placeholders for title, data, image, explanation and div structures
+function ApodSkeleton() {
+  return (
+    <Card>
+      <CardBody className="flex flex-col gap-6 animate-pulse py-6">
+
+        {/* title skeleton */}
+        <div className="h-6 w-48 bg-default-300 rounded-md" />
+
+        {/* date skeleton */}
+        <div className="h-4 w-32 bg-default-200 rounded-md" />
+
+        {/* image skeleton */}
+        <div className="w-full h-[350px] bg-default-300 rounded-xl" />
+
+        {/* explanation skeleton */}
+        <div className="flex flex-col gap-2">
+          <div className="h-4 w-full bg-default-200 rounded-md" />
+          <div className="h-4 w-5/6 bg-default-200 rounded-md" />
+          <div className="h-4 w-4/6 bg-default-200 rounded-md" />
+        </div>
+      </CardBody>
+    </Card>
+  );
+}
+
 export function ApodSearchSection() { // this function stores whatever the user typed into the form (date).
   const [form, setForm] = useState<ApodFormData>({ date: "" });
 
@@ -96,22 +124,17 @@ export function ApodSearchSection() { // this function stores whatever the user 
               className="md:max-w-xs"
             />
 
-            {/* submit button */}
+            {/* submit button 
+            UPDATED SUBMIT BUTTON
+            To remove spinner inside "Get APOD" button and let skeleton handle visual loading instead
+            Button now disables while loading and lets users focus on skeleton content instead of spinner inside button*/}
             <Button
               type="submit"
               color="primary"
               isDisabled={loading} // can't double-click while loading
               className="md:w-auto w-full"
             >
-              {/* show the spinner while loading */}
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <Spinner size="sm" />
-                  <span>Loading...</span>
-                </div>
-              ) : (
-                "Get APOD"
-              )}
+              Get APOD
             </Button>
           </form>
 
@@ -124,14 +147,9 @@ export function ApodSearchSection() { // this function stores whatever the user 
         </CardBody>
       </Card>
 
-      {/* loading state, show big centered spinner */}
-      {loading && !result && (
-        <Card>
-          <CardBody className="flex items-center justify-center py-10">
-            <Spinner size="lg" />
-          </CardBody>
-        </Card>
-      )}
+      {/* loading state, show big centered spinner 
+      UPDATED to replace loading spinner card with skeleton*/}
+      {loading && !result && <ApodSkeleton />}
 
       {/* empty state/before any search */}
       {!loading && !error && !result && (
