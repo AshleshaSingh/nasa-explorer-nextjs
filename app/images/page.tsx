@@ -1,6 +1,7 @@
 // app/images/page.tsx
 "use client";
 
+import React from "react";
 import { useState } from "react";
 import {
   Card,
@@ -35,13 +36,13 @@ function getThumbnailUrl(item: NasaImageItem): string | undefined {
  * Pagination ("Load more") will be implemented in a separate task.
  */
 export default function NasaImageSearchPage() {
-  // Search term entered by the user
+
+  // search term entered by the user
   const [query, setQuery] = useState("");
-  const [queryError, setQueryError] = useState<string | null>(null); // NEW
+  const [queryError, setQueryError] = useState<string | null>(null);
 
-  // derived validity flag
+  // derived validity flag (non-empty after trimming)
   const isQueryValid = query.trim().length > 0;
-
 
   // handle input changes and clear/set errors live
   const handleQueryChange = (value: string) => {
@@ -196,11 +197,15 @@ export default function NasaImageSearchPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const trimmed = query.trim();
+
     // block submit if query is invalid
-    if (!isQueryValid) {
+    if (!trimmed) {
       setQueryError("Please enter a search term.");
       return;
     }
+
+    setQueryError(null);
 
     // When the user submits the form, always start a fresh search from page 1.
     void runSearch("reset");
@@ -248,20 +253,16 @@ export default function NasaImageSearchPage() {
             <Input
               type="text"
               label="Search term"
-            //   labelPlacement="outside" // Ensure the label is outside/above the input
               placeholder="e.g. galaxy, nebula, moon"
               value={query}
               onValueChange={handleQueryChange}
               isRequired
               isInvalid={!!queryError}
-              errorMessage = {queryError ?? undefined}
+              errorMessage={queryError ?? undefined}
               variant="flat"
               className="md:max-w-md"
-            //   classNames={{
-            //     label: "mb-6"  // Adds margin to the bottom of the label wrapper
-            //   }}
               classNames={{
-                label: "mb-4 text-sm font-medium"
+                label: "mb-4 text-sm font-medium",
               }}
             />
 
