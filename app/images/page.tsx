@@ -1,39 +1,21 @@
-// app/images/page.tsx
 "use client";
 
 import React from "react";
 import { useState } from "react";
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Input,
-  Button,
-  Spinner,
-  Image,
-} from "@nextui-org/react";
 import type { NasaImageItem, NasaImageSearchResult } from "@/types/nasa";
-import { ErrorCard } from "@/components/error";
-
-/**
- * Extracts a thumbnail URL from a NASA image item.
- * NASA usually returns thumbnails in the "links" array.
- */
-function getThumbnailUrl(item: NasaImageItem): string | undefined {
-  const firstLink = item.links?.[0];
-  return firstLink?.href;
-}
+import { ImageSearchSection } from "@/components/ImageSearchSection";
 
 /**
  * /images page
  *
- * This component renders:
- *  - a search form
- *  - a grid of results from the NASA Image and Video Library
- *  - loading / error / empty states
+ * This page component owns:
+ *  - search query state
+ *  - result items
+ *  - pagination state (page, hasMore, isLoadingMore)
+ *  - API calls to our backend route (/api/images)
  *
- * Pagination ("Load more") will be implemented in a separate task.
+ * It delegates all UI rendering to <ImageSearchSection />,
+ * which receives state and handlers as props.
  */
 export default function NasaImageSearchPage() {
 
@@ -55,39 +37,34 @@ export default function NasaImageSearchPage() {
     }
   };
 
-  // List of image items returned from the API
+  // List of items returned from the API.
   const [items, setItems] = useState<NasaImageItem[]>([]);
 
-  // Optional total results count from NASA
+  // Optional total hits value returned by NASA (may be null).
   const [totalHits, setTotalHits] = useState<number | null>(null);
 
-  // UI state flags
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // Tracks which page of results we are currently on.
+  // Page number for pagination.
   const [page, setPage] = useState(1);
 
-  // Indicates when the "Load more" button is fetching more results.
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-
-  // Controls whether we should show the "Load more" button.
-  const [hasMore, setHasMore] = useState(true);
+  // Top-level UI flags.
+  const [loading, setLoading] = useState(false); // initial search
+  const [isLoadingMore, setIsLoadingMore] = useState(false); // pagination
+  const [hasMore, setHasMore] = useState(true); // whether to show "Load more"
+  const [error, setError] = useState<string | null>(null);
 
   // track if the user has actually triggered a search
   const [hasSearched, setHasSearched] = useState(false);
 
   /**
-   * Calls our backend route /api/images.
+   * Core search function.
    *
-   * Supports two modes:
-   *  - "reset": start a new search from page 1 (replaces items).
-   *  - "append": load the next page and append to existing items.
+   * mode = "reset"  → start a fresh search from page 1 (replaces items)
+   * mode = "append" → load the next page and append to the list
    */
   const runSearch = async (mode: "reset" | "append" = "reset") => {
     const trimmedQuery = query.trim();
 
-    // Frontend guard: require a non-empty query for both modes.
+    // Basic client-side validation: require a non-empty query.
     if (!trimmedQuery) {
       setError("Please enter a search term.");
       return;
@@ -97,23 +74,23 @@ export default function NasaImageSearchPage() {
     setQueryError(null);
     setError(null);
 
-    // Determine which page we are going to request.
+    // Decide which page we are requesting.
     const targetPage = mode === "reset" ? 1 : page + 1;
 
-    // When starting a fresh search, show the main loading state.
-    // When appending, show a separate "loading more" state.
+    // For a fresh search, clear old results and show main loading spinner.
     if (mode === "reset") {
       setHasSearched(true);
       setLoading(true);
-      setItems([]);        // clear previous results so we don't flash stale data
-      setHasMore(true);    // assume there may be more until we know otherwise
+      setItems([]);
+      setHasMore(true);
       setPage(1);
+      setTotalHits(null);
     } else {
+      // For pagination, show a separate "loading more" state.
       setIsLoadingMore(true);
     }
 
     try {
-      // Build query string for API route.
       const params = new URLSearchParams({
         query: trimmedQuery,
         page: String(targetPage),
@@ -125,51 +102,47 @@ export default function NasaImageSearchPage() {
         | NasaImageSearchResult
         | { message?: string };
 
-      // Handle HTTP error responses with a friendly message for the user.
       if (!res.ok) {
         const msg =
           (data as any).message ??
           "Something went wrong while fetching NASA images.";
         setError(msg);
 
-        // In case of failure, do not keep partial results for a new search.
         if (mode === "reset") {
           setItems([]);
-          setTotalHits(null);
           setHasMore(false);
+          setTotalHits(null);
         }
 
         return;
       }
 
-      // Successful response: extract items and metadata.
       const result = data as NasaImageSearchResult;
       const newItems = result.collection.items ?? [];
       const hits = result.collection.metadata?.total_hits;
 
-      // Append or replace items depending on mode.
+      // Append or replace items based on the mode.
       setItems((prev) =>
         mode === "append" ? [...prev, ...newItems] : newItems,
       );
 
-      // Keep track of total hits if provided.
+      // Store total hits if NASA returned a valid number.
       const numericHits =
         typeof hits === "number" && !Number.isNaN(hits) ? hits : null;
       setTotalHits(numericHits);
 
-      // Update current page because the request completed successfully.
+      // Update the current page on successful request.
       setPage(targetPage);
 
-      // Determine whether there are more items to load:
-      //  - if we know total_hits, compare against items length
-      //  - otherwise, assume "no more" when NASA returns an empty page
+      // Decide whether more results are available.
       setHasMore(() => {
         if (numericHits != null) {
-          const totalLoaded =
-            (mode === "append" ? items.length : 0) + newItems.length;
+          const previousCount = mode === "append" ? items.length : 0;
+          const totalLoaded = previousCount + newItems.length;
           return totalLoaded < numericHits;
         }
-        // Fallback: if the current page returns zero items, stop paginating.
+
+        // Fallback: if this page returned no items, assume there are no more.
         return newItems.length > 0;
       });
     } catch (err) {
@@ -178,11 +151,10 @@ export default function NasaImageSearchPage() {
 
       if (mode === "reset") {
         setItems([]);
-        setTotalHits(null);
         setHasMore(false);
+        setTotalHits(null);
       }
     } finally {
-      // Turn off the appropriate loading state.
       if (mode === "reset") {
         setLoading(false);
       } else {
@@ -192,7 +164,8 @@ export default function NasaImageSearchPage() {
   };
 
   /**
-   * Handles the search form submit event.
+   * Handles form submission from ImageSearchSection.
+   * Always starts a fresh search from page 1.
    */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -212,14 +185,11 @@ export default function NasaImageSearchPage() {
   };
 
   /**
-   * Triggered when the user clicks "Load more".
-   * Requests the next page and appends the results to the grid.
+   * Handles "Load more" button click from ImageSearchSection.
    */
   const handleLoadMore = () => {
     void runSearch("append");
   };
-
-  const hasResults = items.length > 0;
 
   return (
     <main className="flex flex-col gap-6 max-w-6xl mx-auto px-4 py-8">
