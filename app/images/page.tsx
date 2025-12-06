@@ -168,6 +168,7 @@ export default function NasaImageSearchPage() {
       error={error}
       onSubmit={handleSubmit}
       onLoadMore={handleLoadMore}
+      onRetrySearch={() => runSearch("reset")}
     />
   );
 }

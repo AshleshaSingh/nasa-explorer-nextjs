@@ -7,11 +7,13 @@ import {
   CardFooter,
   Input,
   Button,
-  Spinner,
   Image,
 } from "@nextui-org/react";
 import { ErrorCard } from "@/components/error";
-import type { NasaImageItem, NasaImageSearchResult } from "@/types/nasa";
+import type { NasaImageItem } from "@/types/nasa";
+import { ImageSearchSkeleton } from "./ImageSearchSkeleton";
+import { ImageSearchEmptyCard } from "./ImageSearchEmptyCard";
+import { ImageSearchErrorCard } from "./ImageSearchErrorCard";
 
 /**
  * Props for the ImageSearchSection component.
@@ -48,6 +50,9 @@ export interface ImageSearchSectionProps {
 
   // Called when the user clicks the "Load more" button.
   onLoadMore: () => void;
+
+  // Retry behavior logic
+  onRetrySearch: () => void;
 }
 
 /**
@@ -82,6 +87,7 @@ export function ImageSearchSection({
   error,
   onSubmit,
   onLoadMore,
+  onRetrySearch,
 }: ImageSearchSectionProps) {
   const hasResults = items.length > 0;
 
@@ -92,12 +98,11 @@ export function ImageSearchSection({
         <h1 className="text-2xl font-semibold mb-2">NASA Image Search</h1>
         <p className="text-sm text-default-500">
           Search the NASA Image and Video Library for astronomy-related images.
-          Try keywords like &quot;galaxy&quot;, &quot;nebula&quot; or
-          &quot;moon&quot;.
+          Try keywords like &quot;galaxy&quot;, &quot;nebula&quot; or &quot;moon&quot;.
         </p>
       </section>
 
-      {/* Search form card */}
+      {/* Search Form card */}
       <Card>
         <CardHeader className="flex flex-col items-start gap-2">
           <h2 className="text-lg font-semibold">Search images</h2>
@@ -133,25 +138,15 @@ export function ImageSearchSection({
               className="md:w-auto w-full"
               isDisabled={loading}
             >
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <Spinner size="sm" />
-                  <span>Searching...</span>
-                </div>
-              ) : (
-                "Search"
-              )}
+              {loading ? "Searching…" : "Search"}
             </Button>
+
           </form>
 
-          {/* Error message using shared ErrorCard */}
+          {/* Error message */}
           {error && (
             <div className="mt-4">
-              <ErrorCard
-                title="Image search error"
-                message={error}
-                onRetry={onLoadMore /* or re-run last search; can adjust */}
-              />
+              <ImageSearchErrorCard message={error} onRetry={onRetrySearch} />
             </div>
           )}
         </CardBody>
@@ -164,25 +159,14 @@ export function ImageSearchSection({
         )}
       </Card>
 
-      {/* Loading state for initial search (no results yet). */}
-      {loading && !hasResults && !error && (
-        <Card>
-          <CardBody className="flex items-center justify-center py-10">
-            <Spinner size="lg" />
-          </CardBody>
-        </Card>
+      {/* Loading skeleton */}
+      {loading && !hasResults && !error && <ImageSearchSkeleton />}
+
+      {/* Empty results AFTER searching */}
+      {!loading && !error && !hasResults && query.trim() !== "" && (
+        <ImageSearchEmptyCard query={query} />
       )}
 
-      {/* Empty state after the user has searched but got no results. */}
-      {!loading && !error && !hasResults && query.trim() !== "" && (
-        <Card>
-          <CardBody className="text-sm text-default-500">
-            No results found for{" "}
-            <span className="font-semibold">{query.trim()}</span>. Try a
-            different keyword.
-          </CardBody>
-        </Card>
-      )}
 
       {/* Hint before any search is performed. */}
       {!loading && !error && !hasResults && query.trim() === "" && (
@@ -211,7 +195,7 @@ export function ImageSearchSection({
               return (
                 <Card
                   key={data?.nasa_id ?? Math.random()}
-                  className="h-full flex flex-col"
+                  className="rounded-xl overflow-hidden bg-white dark:bg-default-100 shadow-sm hover:shadow-lg transition-shadow duration-200 cursor-pointer"
                 >
                   {/* Thumbnail image (if NASA provided one). */}
                   {thumbUrl && (
@@ -247,14 +231,7 @@ export function ImageSearchSection({
                 onPress={onLoadMore}
                 isDisabled={isLoadingMore}
               >
-                {isLoadingMore ? (
-                  <div className="flex items-center gap-2">
-                    <Spinner size="sm" />
-                    <span>Loading more…</span>
-                  </div>
-                ) : (
-                  "Load more"
-                )}
+                {isLoadingMore ? "Loading…" : "Load more"}
               </Button>
             </div>
           )}
