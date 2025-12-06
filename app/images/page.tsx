@@ -4,6 +4,26 @@ import React from "react";
 import { useState } from "react";
 import type { NasaImageItem, NasaImageSearchResult } from "@/types/nasa";
 import { ImageSearchSection } from "@/components/ImageSearchSection";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Input,
+  Button,
+  Spinner,
+  Image,
+} from "@nextui-org/react";
+import { ErrorCard } from "@/components/error";
+
+/**
+ * Small helper to extract a thumbnail URL from a NASA image item.
+ * NASA usually returns thumbnails in the "links" array.
+ */
+function getThumbnailUrl(item: NasaImageItem): string | undefined {
+  const firstLink = item.links?.[0];
+  return firstLink?.href;
+}
 
 /**
  * /images page
@@ -190,6 +210,9 @@ export default function NasaImageSearchPage() {
   const handleLoadMore = () => {
     void runSearch("append");
   };
+
+  // Derived state: whether we have results to display
+  const hasResults = items.length > 0;
 
   return (
     <main className="flex flex-col gap-6 max-w-6xl mx-auto px-4 py-8">
