@@ -1,8 +1,29 @@
 "use client";
 
+import React from "react";
 import { useState } from "react";
 import type { NasaImageItem, NasaImageSearchResult } from "@/types/nasa";
 import { ImageSearchSection } from "@/components/ImageSearchSection";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Input,
+  Button,
+  Spinner,
+  Image,
+} from "@nextui-org/react";
+import { ErrorCard } from "@/components/error";
+
+/**
+ * Small helper to extract a thumbnail URL from a NASA image item.
+ * NASA usually returns thumbnails in the "links" array.
+ */
+function getThumbnailUrl(item: NasaImageItem): string | undefined {
+  const firstLink = item.links?.[0];
+  return firstLink?.href;
+}
 
 /**
  * /images page
@@ -17,8 +38,24 @@ import { ImageSearchSection } from "@/components/ImageSearchSection";
  * which receives state and handlers as props.
  */
 export default function NasaImageSearchPage() {
-  // Search term entered by the user.
+
+  // search term entered by the user
   const [query, setQuery] = useState("");
+  const [queryError, setQueryError] = useState<string | null>(null);
+
+  // derived validity flag (non-empty after trimming)
+  const isQueryValid = query.trim().length > 0;
+
+  // handle input changes and clear/set errors live
+  const handleQueryChange = (value: string) => {
+    setQuery(value);
+
+    if (value.trim().length === 0) {
+      setQueryError("Please enter a search term.");
+    } else {
+      setQueryError(null);
+    }
+  };
 
   // List of items returned from the API.
   const [items, setItems] = useState<NasaImageItem[]>([]);
@@ -35,6 +72,9 @@ export default function NasaImageSearchPage() {
   const [hasMore, setHasMore] = useState(true); // whether to show "Load more"
   const [error, setError] = useState<string | null>(null);
 
+  // track if the user has actually triggered a search
+  const [hasSearched, setHasSearched] = useState(false);
+
   /**
    * Core search function.
    *
@@ -50,6 +90,8 @@ export default function NasaImageSearchPage() {
       return;
     }
 
+    // Clear any previous error before a new request.
+    setQueryError(null);
     setError(null);
 
     // Decide which page we are requesting.
@@ -57,6 +99,7 @@ export default function NasaImageSearchPage() {
 
     // For a fresh search, clear old results and show main loading spinner.
     if (mode === "reset") {
+      setHasSearched(true);
       setLoading(true);
       setItems([]);
       setHasMore(true);
@@ -144,8 +187,20 @@ export default function NasaImageSearchPage() {
    * Handles form submission from ImageSearchSection.
    * Always starts a fresh search from page 1.
    */
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const trimmed = query.trim();
+
+    // block submit if query is invalid
+    if (!trimmed) {
+      setQueryError("Please enter a search term.");
+      return;
+    }
+
+    setQueryError(null);
+
+    // When the user submits the form, always start a fresh search from page 1.
     void runSearch("reset");
   };
 
@@ -156,10 +211,13 @@ export default function NasaImageSearchPage() {
     void runSearch("append");
   };
 
-  return (
+  // Derived state: whether we have results to display
+  const hasResults = items.length > 0;
+
+return (
     <ImageSearchSection
       query={query}
-      onQueryChange={setQuery}
+      onQueryChange={handleQueryChange}
       items={items}
       totalHits={totalHits}
       loading={loading}
