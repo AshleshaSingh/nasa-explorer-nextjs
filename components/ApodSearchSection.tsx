@@ -9,17 +9,17 @@ import {
   CardFooter,
   Input,
   Button,
-  Spinner,
   Image,
 } from "@heroui/react";
 import type { ApodResponse} from "@/types/nasa";
 import type { ApodFormData } from "@/types/apod";
+import { ApodSkeleton } from "./ApodSkeleton";
+import { ApodEmptyCard } from "./ApodEmptyCard";
+import { ApodErrorCard } from "./ApodErrorCard";
 
-import { ErrorCard } from "@/components/error";
 
 export function ApodSearchSection() { // this function stores whatever the user typed into the form (date).
   const [form, setForm] = useState<ApodFormData>({ date: "" });
-
   // UI states
   const [loading, setLoading] = useState(false); // controls spinner + disabling button
   const [error, setError] = useState<string | null>(null); // error message display
@@ -46,10 +46,10 @@ export function ApodSearchSection() { // this function stores whatever the user 
     const validationError = validateForm(form);
     if (validationError) {
       setError(validationError);
-      return; // don't continue
+      return;
     }
 
-    setLoading(true); // turn on spinner
+    setLoading(true); // turn on skeleton loading state
 
     try {
       // send a request to backend route at /api/apod
@@ -95,53 +95,33 @@ export function ApodSearchSection() { // this function stores whatever the user 
               isRequired // adds a * and required styling
               variant="bordered"
               className="md:max-w-xs"
+              max={new Date().toISOString().split("T")[0]} // can't pick future
             />
 
-            {/* submit button */}
+            {/* submit button 
+            UPDATED SUBMIT BUTTON
+            To remove spinner inside "Get APOD" button and let skeleton handle visual loading instead
+            Button now disables while loading and lets users focus on skeleton content instead of spinner inside button*/}
             <Button
               type="submit"
               color="primary"
               isDisabled={loading} // can't double-click while loading
               className="md:w-auto w-full"
             >
-              {/* show the spinner while loading */}
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <Spinner size="sm" />
-                  <span>Loading...</span>
-                </div>
-              ) : (
-                "Get APOD"
-              )}
+              Get APOD
             </Button>
           </form>
-
-          {/* error UI using the universal card */}
-          {error && (
-            <div className="mt-4">
-                <ErrorCard message = {error} />
-            </div>
-          )}
         </CardBody>
       </Card>
 
-      {/* loading state, show big centered spinner */}
-      {loading && !result && (
-        <Card>
-          <CardBody className="flex items-center justify-center py-10">
-            <Spinner size="lg" />
-          </CardBody>
-        </Card>
-      )}
+      {/* Loading Skeleton */}
+      {loading && !result && <ApodSkeleton />}
 
-      {/* empty state/before any search */}
-      {!loading && !error && !result && (
-        <Card>
-          <CardBody className="text-sm text-default-500">
-            No APOD loaded yet — choose a date and hit submit!
-          </CardBody>
-        </Card>
-      )}
+      {/* Branded Empty State */}
+      {!loading && !error && !result && <ApodEmptyCard />}
+
+      {/* Branded Error State */}
+      {error && <ApodErrorCard message={error} />}
 
       {/* results card: shows NASA APOD data */}
       {result && (
