@@ -9,14 +9,14 @@
 
 ## Summary
 
-- ✅ Core pages (`/`, `/apod`, `/images`) load successfully in production.
-- ✅ APOD flow works end-to-end for a valid date (UI + API).
-- ✅ Invalid APOD date (future) correctly returns an error from NASA and surfaces in the UI.
-- ✅ NASA Image Search works for common queries (e.g. `moon`).
-- ✅ No-results case for Image Search shows a friendly message.
-- ✅ API-only routes return the expected JSON shape.
-- ✅ 404 page is rendered correctly for unknown routes.
-- ⚠️ Only minor UX improvement identified for APOD invalid date error message (tracked in a GitHub issue).
+- Core pages (`/`, `/apod`, `/images`) load successfully in production.
+- APOD flow works end-to-end for a valid date (UI + API).
+- Invalid APOD date (future) correctly returns an error from NASA and surfaces in the UI.
+- NASA Image Search works for common queries (e.g. `moon`).
+- No-results case for Image Search shows a friendly message.
+- API-only routes return the expected JSON shape.
+- 404 page is rendered correctly for unknown routes.
+- Only minor UX improvement identified for APOD invalid date error message (tracked in a GitHub issue).
 
 Overall result: **No blocking production issues found. App is usable and stable in Render.**
 
