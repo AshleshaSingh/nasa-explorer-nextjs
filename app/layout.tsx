@@ -45,21 +45,27 @@ export default function RootLayout({
             <div className="relative flex flex-col h-screen">
               <Navbar />
               <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+                {/* {children} page */}
                 {children}
               </main>
-              <footer className="w-full flex items-center justify-center py-3">
-                <Link
-                  isExternal
-                  className="flex items-center gap-1 text-current"
-                  href="https://heroui.com?utm_source=next-app-template"
-                  title="heroui.com homepage"
-                >
-                  <span className="text-default-600">Powered by</span>
-                  <p className="text-primary">HeroUI</p>
-                </Link>
+              <footer className="w-full border-t border-default-100 mt-10">
+                <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 px-4 py-4 text-xs text-default-500">
+                  <span>
+                    © {new Date().getFullYear()} NASA Explorer — CSU Web Engineering (CPSC 6175)
+                  </span>
+
+                  <a
+                    href="https://github.com/CSU-WebEngineering-fall25/group-project-group1-nasa-api"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline underline-offset-2 hover:text-primary"
+                  >
+                    View project on GitHub
+                  </a>
+                </div>
               </footer>
             </div>
-          </ToastProvider>
+        </ToastProvider>
         </Providers>
       </body>
     </html>
