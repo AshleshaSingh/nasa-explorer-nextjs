@@ -1,16 +1,24 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Next.js + HeroUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "NASA Explorer",
+  description: "A NASA API demo that explores the Astronomy Picture of the Day and the NASA Image and Video Library.",
   navItems: [
+    {
+      label: "APOD",
+      href: "/apod",
+    },
+    {
+      label: "Images",
+      href: "/images",
+    },
+  ],
+
+  // Navigation items for the mobile menu (hamburger)
+  navMenuItems: [
     {
       label: "Home",
       href: "/",
-    },
-    {
-      label: "Docs",
-      href: "/docs",
     },
     {
       label: "APOD",
@@ -20,54 +28,10 @@ export const siteConfig = {
       label: "Images",
       href: "/images",
     },
-    {
-      label: "Blog",
-      href: "/blog",
-    },
-    {
-      label: "About",
-      href: "/about",
-    },
   ],
-  navMenuItems: [
-    {
-      label: "Profile",
-      href: "/profile",
-    },
-    {
-      label: "Dashboard",
-      href: "/dashboard",
-    },
-    {
-      label: "Projects",
-      href: "/projects",
-    },
-    {
-      label: "Team",
-      href: "/team",
-    },
-    {
-      label: "Calendar",
-      href: "/calendar",
-    },
-    {
-      label: "Settings",
-      href: "/settings",
-    },
-    {
-      label: "Help & Feedback",
-      href: "/help-feedback",
-    },
-    {
-      label: "Logout",
-      href: "/logout",
-    },
-  ],
+
   links: {
-    github: "https://github.com/heroui-inc/heroui",
-    twitter: "https://twitter.com/hero_ui",
-    docs: "https://heroui.com",
-    discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev",
+    github: "https://github.com/CSU-WebEngineering-fall25/group-project-group1-nasa-api",
+    docs: "https://api.nasa.gov/",
   },
 };
