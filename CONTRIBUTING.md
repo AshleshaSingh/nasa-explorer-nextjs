@@ -1,6 +1,6 @@
 # Contributing Guidelines – NASA API Web Engineering Project
 
-These guidelines describe **how** we work together on this repository: branches, commits, pull requests, 
+These guidelines describe **how** we work together on this repository: branches, commits, pull requests,
 code review, and general expectations for collaborating as a team.
 
 This file is about the **process of contributing code**, not the individual roles (see `/docs/team.md` for roles).
@@ -11,12 +11,14 @@ This file is about the **process of contributing code**, not the individual role
 - Create feature branches from `main` using a clear naming convention:
 
 Examples:
+
 - `feat/apod-form`
 - `feat/api-apod-route`
 - `fix/apod-error-state`
 - `chore/update-readme`
 
 Commands:
+
 ```bash
 git checkout main
 git pull origin main
@@ -28,6 +30,7 @@ git checkout -b feat/short-description
 Use short, descriptive commit messages in the imperative form:
 
 Examples:
+
 - `feat: add APOD form with date input`
 - `fix: handle missing NASA_API_KEY error`
 - `test: add unit test for fetchApod`
@@ -45,6 +48,7 @@ Avoid very generic messages such as `update`, `fix`, or `changes`.
   - How to test it (if applicable)
 
 Example PR template contents:
+
 - **Summary:** Short description of the change.
 - **Testing:** Steps to reproduce or verify.
 - **Notes:** Known issues, follow-up tasks, or screenshots.
@@ -112,5 +116,5 @@ pnpm lint
 
 ---
 
-By following these guidelines, we keep the project organized, make it easier to collaborate, 
+By following these guidelines, we keep the project organized, make it easier to collaborate,
 and ensure that everyone in the team can contribute effectively.

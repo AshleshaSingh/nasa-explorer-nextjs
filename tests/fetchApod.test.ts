@@ -92,7 +92,7 @@ describe("fetchApod()", () => {
 
     await expect(fetchApod({ date: "2024-01-01" })).rejects.toThrow(
       // Match the actual error message from lib/nasa.ts:
-      "NASA_API_KEY is not set in environment variables."
+      "NASA_API_KEY is not set in environment variables.",
     );
 
     // Restore key for safety
@@ -106,7 +106,7 @@ describe("fetchApod()", () => {
     mockFetch({ error: "error" }, false, 500, "Internal Server Error");
 
     await expect(fetchApod({ date: "2024-01-01" })).rejects.toThrow(
-      "APOD API error: 500 Internal Server Error"
+      "APOD API error: 500 Internal Server Error",
     );
   });
 
@@ -118,7 +118,7 @@ describe("fetchApod()", () => {
     mockFetch(badResponse);
 
     await expect(fetchApod({ date: "2024-01-01" })).rejects.toThrow(
-      "APOD response is missing required fields."
+      "APOD response is missing required fields.",
     );
   });
 });

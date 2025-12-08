@@ -8,11 +8,11 @@ export interface ApodResponse {
   date: string;
   title: string;
   explanation: string;
-  url: string;                     // main media URL
-  media_type: "image" | "video";   // NASA returns "image" or "video"
-  hdurl?: string;                  // optional HD image URL
-  service_version?: string;        // optional API version
-  copyright?: string;              // optional copyright text
+  url: string; // main media URL
+  media_type: "image" | "video"; // NASA returns "image" or "video"
+  hdurl?: string; // optional HD image URL
+  service_version?: string; // optional API version
+  copyright?: string; // optional copyright text
 }
 
 /**
@@ -44,8 +44,8 @@ export interface NasaImageData {
  * Usually contains thumbnail or image URLs.
  */
 export interface NasaImageLink {
-  href: string;    // Direct URL to image/thumbnail
-  rel?: string;    // e.g. "preview"
+  href: string; // Direct URL to image/thumbnail
+  rel?: string; // e.g. "preview"
   render?: string; // e.g. "image"
 }
 

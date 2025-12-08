@@ -12,26 +12,26 @@ Built as a Web Engineering project — focusing on API integration, UI developme
 
 ## Project Status
 
-| Feature | Sprint 1 | Sprint 2 |
-|---|:---:|:---:|
-| Local environment setup | Done | — |
-| APOD server-side API handler | Done | — |
-| APOD Search UI + HeroUI components | Done | — |
-| Global + Component Error UI | Implemented, pending refinement | — |
-| Unit + Integration Tests | Basic coverage | Expand >70% |
-| NASA Image Search | — | Sprint 2 |
-| Deployment (Render.io) | — | Sprint 2 |
+| Feature                            |            Sprint 1             |  Sprint 2   |
+| ---------------------------------- | :-----------------------------: | :---------: |
+| Local environment setup            |              Done               |      —      |
+| APOD server-side API handler       |              Done               |      —      |
+| APOD Search UI + HeroUI components |              Done               |      —      |
+| Global + Component Error UI        | Implemented, pending refinement |      —      |
+| Unit + Integration Tests           |         Basic coverage          | Expand >70% |
+| NASA Image Search                  |                —                |  Sprint 2   |
+| Deployment (Render.io)             |                —                |  Sprint 2   |
 
 ---
 
 # Team Overview
 
-| Member | Sprint 1 Role | Sprint 2 Role |
-|---|---|---|
-| **Khushi Jani** | Backend Lead (APOD API) + Unit Testing Support | UI Enhancements (Skeletons, Empty States) + Final QA |
-| **Daniel Ramirez** | Frontend Lead (APOD UI) + UI Documentation | Backend Validation (Zod + RHF) + Integration Testing |
-| **Fnu Swati** | Testing Lead + TypeScript Setup | Feature Dev (NASA Image Search + Pagination) + Documentation |
-| **John Morales** | No Sprint-1 output → responsibilities redistributed | Work reassigned to team (see Sprint 2) |
+| Member             | Sprint 1 Role                                               | Sprint 2 Role                                                 |
+| ------------------ | ----------------------------------------------------------- | ------------------------------------------------------------- |
+| **Khushi Jani**    | Backend Lead (APOD API) + Unit Testing Support              | UI Enhancements (Skeletons, Empty States) + Final QA          |
+| **Daniel Ramirez** | Frontend Lead (APOD UI) + UI Documentation                  | Backend Validation (Zod + RHF) + Integration Testing          |
+| **Fnu Swati**      | Testing Lead + TypeScript Setup                             | Feature Dev (NASA Image Search + Pagination) + Documentation  |
+| **John Morales**   | No Sprint-1 output → responsibilities redistributed         | Work reassigned to team (see Sprint 2)                        |
 | **Ashlesha Singh** | Project Board + API–UI Integration + Sprint-1 Documentation | Feature Dev (Search UI Shared) + README Polish + Presentation |
 
 > **Note:** Since John did not contribute during Sprint-1, his future tasks were redistributed to maintain workflow continuity.
@@ -42,52 +42,56 @@ Built as a Web Engineering project — focusing on API integration, UI developme
 
 ### **Sprint 1 – Setup & Core Development (Completed)**
 
-| Area | Member(s) Responsible | Deliverables |
-|---|---|---|
-| Backend / API | Khushi + Ashlesha | `lib/nasa.ts`, `/api/apod` route |
-| Frontend / UI | Daniel | `/apod` form page + loading/error states |
-| Testing | Swati + Khushi | Unit test for `fetchApod`, integration test for `/api/apod` |
-| TypeScript Setup | Swati | `/types` folder + interfaces |
-| Project Board Setup | Ashlesha | GitHub Project board + task breakdown |
-| Environment Setup | Ashlesha | `.env.example`, setup instructions |
-| Documentation | Ashlesha | `/docs/team.md`, `/docs/api-notes.md`, `CONTRIBUTING.md` |
-| Error Handling UI | Reassigned → completed by Ashlesha | Global + component-level error UI |
+| Area                | Member(s) Responsible              | Deliverables                                                |
+| ------------------- | ---------------------------------- | ----------------------------------------------------------- |
+| Backend / API       | Khushi + Ashlesha                  | `lib/nasa.ts`, `/api/apod` route                            |
+| Frontend / UI       | Daniel                             | `/apod` form page + loading/error states                    |
+| Testing             | Swati + Khushi                     | Unit test for `fetchApod`, integration test for `/api/apod` |
+| TypeScript Setup    | Swati                              | `/types` folder + interfaces                                |
+| Project Board Setup | Ashlesha                           | GitHub Project board + task breakdown                       |
+| Environment Setup   | Ashlesha                           | `.env.example`, setup instructions                          |
+| Documentation       | Ashlesha                           | `/docs/team.md`, `/docs/api-notes.md`, `CONTRIBUTING.md`    |
+| Error Handling UI   | Reassigned → completed by Ashlesha | Global + component-level error UI                           |
 
 ---
 
 ### **Sprint 2 – Testing, UI Polish, Deployment (Balanced Roles)**
 
-| Area | Member(s) Responsible | Deliverables |
-|---|---|---|
-| Feature Dev: Image Search UI | Ashlesha | NASA Image Search, pagination, shared UI |
-| Validation & Form UX | Daniel | Zod + React Hook Form + integration tests |
-| UI Enhancements | Khushi | Skeletons + empty states + refined APOD UI |
-| Deployment & Production QA | **Swati (previously John)** | Render deployment + environment config + QA |
-| Final Documentation & Demo | Ashlesha + Team | README polish + presentation slides + sprint review |
+| Area                         | Member(s) Responsible       | Deliverables                                        |
+| ---------------------------- | --------------------------- | --------------------------------------------------- |
+| Feature Dev: Image Search UI | Ashlesha                    | NASA Image Search, pagination, shared UI            |
+| Validation & Form UX         | Daniel                      | Zod + React Hook Form + integration tests           |
+| UI Enhancements              | Khushi                      | Skeletons + empty states + refined APOD UI          |
+| Deployment & Production QA   | **Swati (previously John)** | Render deployment + environment config + QA         |
+| Final Documentation & Demo   | Ashlesha + Team             | README polish + presentation slides + sprint review |
 
 ---
 
 # Contribution Expectations
 
 ### Each team member will:
+
 - Commit code regularly — visible in repo history
 - Write or contribute to tests for assigned features
 - Update docs + project board during progress
 
 ### GitHub Project Board Flow:
+
 Backlog → In Progress → In Review → Done
 
 ### Code Collaboration Rules
-| Rule | Requirement |
-|---|---|
-| Branching | `feat/...`, `fix/...`, `test/...` |
-| PR Review | At least one reviewer required |
-| Merge Policy | No unreviewed merges |
-| PR Size | Small, focused, descriptive |
+
+| Rule         | Requirement                       |
+| ------------ | --------------------------------- |
+| Branching    | `feat/...`, `fix/...`, `test/...` |
+| PR Review    | At least one reviewer required    |
+| Merge Policy | No unreviewed merges              |
+| PR Size      | Small, focused, descriptive       |
 
 ---
 
 # Project Structure
+
 ```bash
 group-project-group1-nasa-api/
 ├── app/                          # Next.js App Router (pages, routes, layouts)
@@ -148,63 +152,74 @@ pnpm dev                     # run locally at http://localhost:3000
 ```
 
 # Deployment (Render.io)
+
 Our production app is deployed on Render.
 
 ## Production URL:
+
 https://group-project-group1-nasa-api.onrender.com
 
 ## Render Service Configuration
+
 Service type: Web Service
 Language: Node
 Branch: main
+
 # Build command:
+
 ```bash
 npm install && npm run build
 ```
+
 # Start command:
+
 ```bash
 npm run start
 ```
+
 Instance type: Free (512 MB RAM, 0.1 CPU) — suitable for this class project.
 
 # Environment Variables on Render
+
 We do not commit real secrets into GitHub.
 Instead, we configure them in Render under Environment → Environment Variables:
-  `NASA_API_KEY → our real NASA API key`
+`NASA_API_KEY → our real NASA API key`
 
-  `NASA_API_BASE → https://api.nasa.gov`
-
+`NASA_API_BASE → https://api.nasa.gov`
 
 These are read on the server only via process.env in `lib/nasa.ts`, so the key is not exposed to the browser.
 Example from `lib/nasa.ts`:
+
 ```bash
 const BASE_URL = process.env.NASA_API_BASE ?? "https://api.nasa.gov";
 const API_KEY = process.env.NASA_API_KEY;
 ```
 
 # How to Redeploy
+
 Any push to the main branch triggers an automatic deploy on Render:
+
 1. Commit + push changes to main
 2. Render detects the commit and runs:
-  `npm install && npm run build`
-  `npm run start`
+   `npm install && npm run build`
+   `npm run start`
 
 3. You can watch logs and deploy status on the Render dashboard.
 
 If needed, you can also trigger a Manual Deploy from the Render UI.
 
-
-
 # Useful References
-- Resource	Link
-- NASA API Docs	https://api.nasa.gov
-- HeroUI Docs	https://www.heroui.com/docs
-- Next.js App Router	https://nextjs.org/docs/app
-- Vitest Testing	https://vitest.dev
+
+- Resource Link
+- NASA API Docs https://api.nasa.gov
+- HeroUI Docs https://www.heroui.com/docs
+- Next.js App Router https://nextjs.org/docs/app
+- Vitest Testing https://vitest.dev
 
 ## License
 
 Licensed under the [MIT license](https://github.com/heroui-inc/next-app-template/blob/main/LICENSE).
+
 - [Next.js 14](https://nextjs.org/docs/getting-started)
 - [HeroUI v2](https://heroui.com/)
 - [Tailwind CSS](https://tailwindcss.com/)

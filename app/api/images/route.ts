@@ -1,6 +1,7 @@
 // app/api/images/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
+
 import { searchNasaImages } from "@/lib/nasa";
 
 /**
@@ -26,7 +27,9 @@ export async function GET(req: NextRequest) {
     // Return success JSON
     return NextResponse.json(result, { status: 200 });
   } catch (error: any) {
-    console.error("Error in /api/images:", error);
+    if (process.env.NODE_ENV !== "production") {
+      console.error("Error in /api/images:", error);
+    }
 
     // Return a JSON error shape the UI can read
     return NextResponse.json(

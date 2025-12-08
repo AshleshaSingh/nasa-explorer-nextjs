@@ -1,6 +1,6 @@
 "use client";
-import {Card, CardBody} from "@heroui/react";
 import React from "react";
+import { Card, CardBody } from "@heroui/react";
 
 // Skeleton Loader Component
 // To replace small button spinner and large card spinner

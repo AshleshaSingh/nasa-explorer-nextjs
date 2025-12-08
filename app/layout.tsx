@@ -1,11 +1,13 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Link } from "@heroui/link";
 import clsx from "clsx";
+
 import { Providers } from "./providers";
+
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
+import { ToastProvider } from "@/components/Toast";
 
 export const metadata: Metadata = {
   title: {
@@ -24,7 +26,7 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
 };
-// api call -> hide api key
+
 export default function RootLayout({
   children,
 }: {
@@ -40,24 +42,32 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <div className="relative flex flex-col h-screen">
-            <Navbar />
-            <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-              {/* {children} page */}
-              {children}
-            </main>
-            <footer className="w-full flex items-center justify-center py-3">
-              <Link
-                isExternal
-                className="flex items-center gap-1 text-current"
-                href="https://heroui.com?utm_source=next-app-template"
-                title="heroui.com homepage"
-              >
-                <span className="text-default-600">Powered by</span>
-                <p className="text-primary">HeroUI</p>
-              </Link>
-            </footer>
-          </div>
+          <ToastProvider>
+            <div className="relative flex flex-col h-screen">
+              <Navbar />
+              <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+                {/* {children} page */}
+                {children}
+              </main>
+              <footer className="w-full border-t border-default-100 mt-10">
+                <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 px-4 py-4 text-xs text-default-500">
+                  <span>
+                    © {new Date().getFullYear()} NASA Explorer — CSU Web
+                    Engineering (CPSC 6175)
+                  </span>
+
+                  <a
+                    className="underline underline-offset-2 hover:text-primary"
+                    href="https://github.com/CSU-WebEngineering-fall25/group-project-group1-nasa-api"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    View project on GitHub
+                  </a>
+                </div>
+              </footer>
+            </div>
+          </ToastProvider>
         </Providers>
       </body>
     </html>

@@ -2,6 +2,48 @@ import React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ApodSearchSection } from "../components/ApodSearchSection";
+import { renderWithProviders } from "./test-utils";
+
+// Mock the toast hook
+vi.mock("@/app/hooks/useCustomToast", () => ({
+  useCustomToast: () => ({
+    showSuccess: vi.fn(),
+    showError: vi.fn(),
+  }),
+}));
+
+// Mock the child components
+vi.mock("@/components/ApodSkeleton", () => ({
+  ApodSkeleton: () => <div data-testid="apod-skeleton">Loading...</div>,
+}));
+
+vi.mock("@/components/ApodEmptyCard", () => ({
+  ApodEmptyCard: () => (
+    <div data-testid="apod-empty">
+      <p className="text-lg font-medium text-default-700">
+        No APOD loaded yet.
+      </p>
+      <p className="text-sm text-default-500">
+        Pick a date above and hit submit!
+      </p>
+    </div>
+  ),
+}));
+
+vi.mock("@/components/ApodErrorCard", () => ({
+  ApodErrorCard: ({ message }: { message: string }) => (
+    <div
+      data-testid="apod-error-card"
+      className="border border-error-500 bg-error-50"
+    >
+      <div className="text-4xl text-error-500">Error</div>
+      <p className="text-sm text-error-700 font-medium">
+        Resubmit with a valid date.
+      </p>
+      <p className="text-xs text-error-600">{message}</p>
+    </div>
+  ),
+}));
 
 // keep original fetch to restore after each test
 const originalFetch = global.fetch;
@@ -19,18 +61,18 @@ describe("ApodSearchSection integration", () => {
   function mockFetchSuccess(data: any) {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: vi.fn().mockResolvedValue({
+      json: async () => ({
         ok: true,
         data,
       }),
     } as any);
   }
 
-// simulate API call failing
+  // simulate API call failing
   function mockFetchError(errorMessage: string) {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: vi.fn().mockResolvedValue({
+      json: async () => ({
         ok: false,
         error: errorMessage,
       }),
@@ -49,19 +91,26 @@ describe("ApodSearchSection integration", () => {
       url: "http://example.com/image.jpg",
       media_type: "image",
       explanation: "Some explanation",
+      hdurl: "http://example.com/hd-image.jpg",
     };
 
     mockFetchSuccess(mockApod);
 
-    render(<ApodSearchSection />);
+    renderWithProviders(<ApodSearchSection />);
 
     // fill date + submit
-    fireEvent.change(getDateInput(), { target: { value: mockApod.date } });
-    fireEvent.click(getSubmitButton());
+    const dateInput = getDateInput();
+    fireEvent.change(dateInput, { target: { value: mockApod.date } });
+
+    // Get the form and submit it properly
+    const form = dateInput.closest("form")!;
+    fireEvent.submit(form);
 
     // backend should be called with the date
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(`/api/apod?date=${mockApod.date}`);
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining(`/api/apod?date=${mockApod.date}`),
+      );
     });
 
     // result card shows APOD title and date
@@ -70,36 +119,50 @@ describe("ApodSearchSection integration", () => {
   });
 
   // 2) invalid input (missing date) → validation error, no fetch
+  // 2) invalid input (missing date) → validation error, no fetch
   it("shows a validation error when date is missing and does not call fetch", async () => {
     global.fetch = vi.fn() as any;
 
-    render(<ApodSearchSection />);
+    renderWithProviders(<ApodSearchSection />);
 
-    // submit with empty date
-    fireEvent.click(getSubmitButton());
+    // Get the submit button - it should be DISABLED because form is invalid
+    const submitButton = getSubmitButton();
+    expect(submitButton).toBeDisabled();
+    expect(submitButton).toHaveAttribute("disabled");
 
-    // HeroUI's built-in message for invalid required field
-    expect(
-      await screen.findByText(/Constraints not satisfied/i),
-    ).toBeInTheDocument();
+    // Try to click (won't work because disabled)
+    fireEvent.click(submitButton);
 
-    // no network request should be made
+    // No network request should be made because button is disabled
     expect(global.fetch).not.toHaveBeenCalled();
+
+    // Additional check: the date input should indicate it's required
+    const dateInput = getDateInput();
+    expect(dateInput).toBeRequired();
   });
 
   // 3) loading → API returns ok:false → error UI from backend
   it("shows backend error message when API responds with ok:false", async () => {
-    const apiError = "APOD API failed.";
+    const apiError = "API error";
 
     mockFetchError(apiError);
 
-    render(<ApodSearchSection />);
+    renderWithProviders(<ApodSearchSection />);
 
-    fireEvent.change(getDateInput(), { target: { value: "2024-01-02" } });
-    fireEvent.click(getSubmitButton());
+    const dateInput = getDateInput();
+    fireEvent.change(dateInput, { target: { value: "2024-01-02" } });
 
-    // error message from backend should appear via ErrorCard
-    expect(await screen.findByText(apiError)).toBeInTheDocument();
+    const form = dateInput.closest("form")!;
+    fireEvent.submit(form);
+
+    // error message from backend should appear
+    // The component shows "API error" in the small text and "Resubmit with a valid date." as main message
+    await waitFor(() => {
+      expect(
+        screen.getByText("Resubmit with a valid date."),
+      ).toBeInTheDocument();
+      expect(screen.getByText("API error")).toBeInTheDocument();
+    });
   });
 
   // 4) empty state before search → hidden after success
@@ -110,27 +173,27 @@ describe("ApodSearchSection integration", () => {
       url: "http://example.com/image2.jpg",
       media_type: "image",
       explanation: "More explanation",
+      hdurl: "http://example.com/hd-image2.jpg",
     };
 
     mockFetchSuccess(mockApod);
 
-    render(<ApodSearchSection />);
+    renderWithProviders(<ApodSearchSection />);
 
     // initial empty state is visible
-    expect(
-      screen.getByText(/No APOD loaded yet — choose a date and hit submit/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/No APOD loaded yet./i)).toBeInTheDocument();
 
     // perform a successful search
-    fireEvent.change(getDateInput(), { target: { value: mockApod.date } });
-    fireEvent.click(getSubmitButton());
+    const dateInput = getDateInput();
+    fireEvent.change(dateInput, { target: { value: mockApod.date } });
+
+    const form = dateInput.closest("form")!;
+    fireEvent.submit(form);
 
     // wait for result card
     await screen.findByText(mockApod.title);
 
     // empty state should be gone
-    expect(
-      screen.queryByText(/No APOD loaded yet — choose a date and hit submit/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/No APOD loaded yet./i)).not.toBeInTheDocument();
   });
 });

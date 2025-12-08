@@ -13,40 +13,46 @@ Before starting, ensure you have:
 
 - **Enable Corepack (recommended)**  
   Corepack manages pnpm versions across different machines. Run this once:
+
   ```bash
-  corepack enable 
+  corepack enable
   ```
 
 - **pnpm package manager**
   If Corepack is not available, install manually:
+
   ```bash
   npm install -g pnpm
   ```
 
 - Git
-https://git-scm.com/
+  https://git-scm.com/
 
 - NASA API Key
-https://api.nasa.gov/
+  https://api.nasa.gov/
 
 ## 2. Clone the Repository
+
 ```bash
 git clone <your-repo-url>
 cd <project-folder-name>
 ```
 
 Switch to the latest main branch:
+
 ```bash
 git checkout main
 git pull origin main
 ```
 
 ## 3. Install Dependencies
+
 ```bash
 pnpm install
 ```
 
 This installs all required packages:
+
 - Next.js
 - React
 - TypeScript
@@ -57,18 +63,22 @@ This installs all required packages:
 ## 4. Configure Environment Variables
 
 1. Copy the example environment file:
+
 ```bash
 cp .env.example .env.local
 ```
 
 2. Open .env.local and add your NASA API key:
+
 ```ini
 NASA_API_KEY=your_real_key_here
 NASA_API_BASE=https://api.nasa.gov
 ```
+
 .env.local is ignored by Git and safe to use for development.
 
 5. Run Development Server
+
 ```bash
 pnpm dev
 ```
@@ -77,6 +87,7 @@ Then open your browser:
 http://localhost:3000
 
 6. Project Folder Structure
+
 ```graphql
 app/
   api/
@@ -97,16 +108,19 @@ docs/
 7. Running Tests
 
 Run full test suite:
+
 ```bash
 pnpm test
 ```
 
 Watch mode:
+
 ```bash
 pnpm test:watch
 ```
 
 Coverage report:
+
 ```bash
 pnpm coverage
 ```
@@ -116,15 +130,18 @@ Goal: ≥ 70% coverage.
 8. Linting & Formatting
 
 Run the linter:
+
 ```bash
 pnpm lint
 ```
 
 Auto-format:
+
 ```bash
 pnpm format
 ```
 
 ## Setup Complete!
+
 Your development environment is now ready!
 You can begin feature development, testing, and deployment work.

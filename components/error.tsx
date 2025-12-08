@@ -10,8 +10,11 @@ interface ErrorCardProps {
   onRetry?: () => void; // optional retry callback
 }
 
-
-export function ErrorCard({ message, title = "Something went wrong", onRetry }: ErrorCardProps) {
+export function ErrorCard({
+  message,
+  title = "Something went wrong",
+  onRetry,
+}: ErrorCardProps) {
   return (
     <Card className="border border-danger-300 bg-danger-50" shadow="none">
       <CardHeader className="text-sm font-semibold text-danger-700">
@@ -21,10 +24,10 @@ export function ErrorCard({ message, title = "Something went wrong", onRetry }: 
         <p>{message}</p>
         {onRetry && (
           <Button
+            className="self-start"
+            color="danger"
             size="sm"
             variant="flat"
-            color="danger"
-            className="self-start"
             onPress={onRetry}
           >
             Try again
