@@ -9,14 +9,14 @@ export const Logo: React.FC<IconSvgProps> = ({
   ...props
 }) => (
   <svg
-    width={size || width}
-    height={size || height}
-    viewBox="0 0 24 24"
     fill="none"
+    height={size || height}
     stroke="currentColor"
-    strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+    width={size || width}
     {...props}
   >
     <circle cx="12" cy="12" r="5" />

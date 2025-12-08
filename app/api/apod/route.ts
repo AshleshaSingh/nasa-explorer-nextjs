@@ -1,7 +1,9 @@
 // app/api/apod/route.ts
-import { NextResponse } from "next/server";
-import { fetchApod } from "../../../lib/nasa";
 import type { ApodResult } from "../../../types/nasa";
+
+import { NextResponse } from "next/server";
+
+import { fetchApod } from "../../../lib/nasa";
 
 export async function GET(req: Request) {
   try {
@@ -34,7 +36,9 @@ export async function GET(req: Request) {
 
     return NextResponse.json({ ok: true, data }, { status: 200 });
   } catch (error: any) {
-    console.error("Error in /api/apod:", error);
+    if (process.env.NODE_ENV !== "production") {
+      console.error("Error in /api/apod:", error);
+    }
 
     return NextResponse.json(
       {

@@ -1,5 +1,7 @@
 "use client";
 
+import type { ApodResponse } from "@/types/nasa";
+
 import React from "react";
 import { useState } from "react";
 import {
@@ -11,14 +13,15 @@ import {
   Button,
   Image,
 } from "@heroui/react";
-import type { ApodResponse } from "@/types/nasa";
-import { apodFormSchema, type ApodFormData } from "@/types/apod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import { ApodSkeleton } from "./ApodSkeleton";
 import { ApodEmptyCard } from "./ApodEmptyCard";
 import { ApodErrorCard } from "./ApodErrorCard";
+
+import { apodFormSchema, type ApodFormData } from "@/types/apod";
 import { useCustomToast } from "@/app/hooks/useCustomToast";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 /**
  * Astronomy Picture of the Day search section.
@@ -78,6 +81,7 @@ export function ApodSearchSection() {
           showError(json.error);
         }
         setError(json.error || "Failed to load APOD. Please try again.");
+
         return;
       }
 
@@ -88,8 +92,11 @@ export function ApodSearchSection() {
       setResult(apod);
       showSuccess("APOD Loaded");
     } catch (err) {
-      console.error(err);
+      if (process.env.NODE_ENV !== "production") {
+        console.error(err);
+      }
       const errorMessage = "Network error. Please check your connection.";
+
       showError(errorMessage);
       setError(errorMessage);
     } finally {
@@ -113,31 +120,31 @@ export function ApodSearchSection() {
         <CardBody>
           {/* form handling the date input */}
           <form
-            onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col md:flex-row gap-3 items-stretch md:items-end"
+            onSubmit={handleSubmit(onSubmit)}
           >
             {/* APOD date input (validated with Zod + RHF) */}
             <Input
-              type="date"
-              label="Date"
               isRequired
-              variant="bordered"
               className="md:max-w-xs"
-              min="1995-06-16"
+              label="Date"
               max={todayStr}
+              min="1995-06-16"
+              type="date"
+              variant="bordered"
               // connect this field to React Hook Form
               {...register("date")}
               // show validation state + message
-              isInvalid={!!errors.date}
               errorMessage={errors.date?.message}
+              isInvalid={!!errors.date}
             />
 
             {/* Submit button is disabled while loading OR when the form is invalid */}
             <Button
-              type="submit"
-              color="primary"
               className="md:w-auto w-full"
+              color="primary"
               isDisabled={loading || !isValid}
+              type="submit"
             >
               {loading ? "Loading..." : "Get APOD"}
             </Button>
@@ -166,17 +173,17 @@ export function ApodSearchSection() {
             {/* NASA returns image or video */}
             {result.media_type === "image" ? (
               <Image
-                src={result.url}
                 alt={result.title}
                 className="max-h-[450px] object-contain"
+                src={result.url}
               />
             ) : (
               <div className="relative w-full aspect-video">
                 <iframe
-                  src={result.url}
-                  title={result.title}
                   allowFullScreen
                   className="w-full h-full rounded-lg"
+                  src={result.url}
+                  title={result.title}
                 />
               </div>
             )}
@@ -193,10 +200,10 @@ export function ApodSearchSection() {
               <Button
                 as="a"
                 href={result.hdurl}
-                target="_blank"
                 rel="noreferrer"
-                variant="flat"
                 size="sm"
+                target="_blank"
+                variant="flat"
               >
                 View HD Image
               </Button>

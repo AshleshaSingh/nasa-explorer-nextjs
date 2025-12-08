@@ -103,6 +103,18 @@ export default defineConfig([
       "no-unused-vars": "off",
       "unused-imports/no-unused-vars": "off",
       "unused-imports/no-unused-imports": "warn",
+      "react/jsx-sort-props": "off",
+      "import/order": "off",
+
+      "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
+
+      // Disable conflicting or unnecessary rules
+      "react/jsx-sort-props": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
+      "import/order": "off",
 
       "@typescript-eslint/no-unused-vars": [
         "warn",

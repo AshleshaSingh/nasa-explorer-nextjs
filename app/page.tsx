@@ -23,13 +23,13 @@ export default function Home() {
       {/* Navigation Section */}
       <div className="flex gap-4 mt-8 flex-col sm:flex-row">
         <Link href="/apod">
-          <Button color="primary" variant="shadow" className="px-6">
+          <Button className="px-6" color="primary" variant="shadow">
             🚀 APOD – Picture of the Day
           </Button>
         </Link>
 
         <Link href="/images">
-          <Button color="secondary" variant="bordered" className="px-6">
+          <Button className="px-6" color="secondary" variant="bordered">
             🪐 NASA Image Search
           </Button>
         </Link>

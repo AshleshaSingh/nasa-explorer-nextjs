@@ -16,6 +16,7 @@ export const apodFormSchema = z.object({
     .refine(
       (value) => {
         const parsed = new Date(value);
+
         if (Number.isNaN(parsed.getTime())) return false;
 
         const min = new Date("1995-06-16");

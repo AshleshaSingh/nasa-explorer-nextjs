@@ -28,11 +28,13 @@ export async function fetchApod(params: {
   thumbs?: boolean;
 }): Promise<ApodResult> {
   const API_KEY = process.env.NASA_API_KEY;
+
   if (!API_KEY) {
     throw new Error("NASA_API_KEY is not set in environment variables.");
   }
 
   const url = new URL("/planetary/apod", BASE_URL);
+
   url.searchParams.set("api_key", API_KEY);
 
   if (params.date) {
@@ -86,6 +88,7 @@ export async function searchNasaImages(params: {
 
   // Build the URL for NASA image search
   const url = new URL("/search", IMAGES_BASE_URL);
+
   url.searchParams.set("q", query.trim());
   url.searchParams.set("media_type", "image"); // limit to images only
   url.searchParams.set("page", String(page));

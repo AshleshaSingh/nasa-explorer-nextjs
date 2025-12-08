@@ -1,10 +1,13 @@
 "use client";
 
+import type { NasaImageItem, NasaImageSearchResult } from "@/types/nasa";
+
 import React from "react";
 import { useState } from "react";
-import type { NasaImageItem, NasaImageSearchResult } from "@/types/nasa";
-import { ImageSearchSection } from "@/components/ImageSearchSection";
+
 import { useCustomToast } from "../hooks/useCustomToast";
+
+import { ImageSearchSection } from "@/components/ImageSearchSection";
 
 /**
  * /images page
@@ -76,8 +79,10 @@ export default function NasaImageSearchPage() {
     // Basic client-side validation: require a non-empty query.
     if (!trimmedQuery) {
       const errorMsg = "Please enter a search term.";
+
       showError(errorMsg);
       setError(errorMsg);
+
       return;
     }
 
@@ -116,6 +121,7 @@ export default function NasaImageSearchPage() {
         const msg =
           (data as any).message ??
           "Something went wrong while fetching NASA images.";
+
         if (msg.includes("API") || msg.includes("fetch")) {
           showError("NASA API error. Please try again later.");
         } else if (msg.includes("key") || msg.includes("DEMO_KEY")) {
@@ -132,6 +138,7 @@ export default function NasaImageSearchPage() {
           setHasMore(false);
           setTotalHits(null);
         }
+
         return;
       }
 
@@ -147,6 +154,7 @@ export default function NasaImageSearchPage() {
       // Store total hits if NASA returned a valid number.
       const numericHits =
         typeof hits === "number" && !Number.isNaN(hits) ? hits : null;
+
       setTotalHits(numericHits);
 
       // Update the current page on successful request.
@@ -157,6 +165,7 @@ export default function NasaImageSearchPage() {
         if (numericHits != null) {
           const previousCount = mode === "append" ? items.length : 0;
           const totalLoaded = previousCount + newItems.length;
+
           return totalLoaded < numericHits;
         }
 
@@ -175,8 +184,11 @@ export default function NasaImageSearchPage() {
         showSuccess(`Loaded ${newItems.length} more images`);
       }
     } catch (err) {
-      console.error(err);
+      if (process.env.NODE_ENV !== "production") {
+        console.error(err);
+      }
       const errorMsg = "Network error. Please check your connection.";
+
       showError(errorMsg);
       setError(errorMsg);
       if (mode === "reset") {
@@ -205,8 +217,10 @@ export default function NasaImageSearchPage() {
     // block submit if query is invalid
     if (!trimmed) {
       const errorMsg = "Please enter a search term.";
+
       showError(errorMsg);
       setQueryError(errorMsg);
+
       return;
     }
 
@@ -225,19 +239,19 @@ export default function NasaImageSearchPage() {
 
   return (
     <ImageSearchSection
-      query={query}
-      onQueryChange={handleQueryChange}
-      items={items}
-      totalHits={totalHits}
-      loading={loading}
-      isLoadingMore={isLoadingMore}
-      hasMore={hasMore}
       error={error ?? queryError}
+      hasMore={hasMore}
       hasSearched={hasSearched}
+      isLoadingMore={isLoadingMore}
       isQueryValid={isQueryValid} // Pass the derived validity flag for button disabling
-      onSubmit={handleSubmit}
+      items={items}
+      loading={loading}
+      query={query}
+      totalHits={totalHits}
       onLoadMore={handleLoadMore}
+      onQueryChange={handleQueryChange}
       onRetrySearch={() => runSearch("reset")}
+      onSubmit={handleSubmit}
     />
   );
 }

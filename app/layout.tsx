@@ -1,8 +1,9 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Link } from "@heroui/link";
 import clsx from "clsx";
+
 import { Providers } from "./providers";
+
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
@@ -56,10 +57,10 @@ export default function RootLayout({
                   </span>
 
                   <a
-                    href="https://github.com/CSU-WebEngineering-fall25/group-project-group1-nasa-api"
-                    target="_blank"
-                    rel="noreferrer"
                     className="underline underline-offset-2 hover:text-primary"
+                    href="https://github.com/CSU-WebEngineering-fall25/group-project-group1-nasa-api"
+                    rel="noreferrer"
+                    target="_blank"
                   >
                     View project on GitHub
                   </a>

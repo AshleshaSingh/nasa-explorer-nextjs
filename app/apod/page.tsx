@@ -1,4 +1,3 @@
-import { title } from "@/components/primitives";
 // import APOD search UI
 import { ApodSearchSection } from "@/components/ApodSearchSection";
 

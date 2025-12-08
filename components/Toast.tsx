@@ -21,9 +21,11 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export function useToast() {
   const context = useContext(ToastContext);
+
   if (!context) {
     throw new Error("useToast must be used within a ToastProvider");
   }
+
   return context;
 }
 
@@ -83,6 +85,7 @@ function ToastItem({
     const timer = setTimeout(() => {
       onClose();
     }, toast.duration);
+
     return () => clearTimeout(timer);
   }, [toast.duration, onClose]);
 
@@ -119,7 +122,7 @@ function ToastItem({
         <p className="text-sm font-medium">{toast.message}</p>
       </div>
       <button
-        onClick={onClose}
+        aria-label="Close notification"
         className="
           text-white/80 
           hover:text-white 
@@ -135,7 +138,7 @@ function ToastItem({
           focus:ring-2
           focus:ring-white/50
         "
-        aria-label="Close notification"
+        onClick={onClose}
       >
         ×
       </button>

@@ -24,10 +24,10 @@ export function ErrorCard({
         <p>{message}</p>
         {onRetry && (
           <Button
+            className="self-start"
+            color="danger"
             size="sm"
             variant="flat"
-            color="danger"
-            className="self-start"
             onPress={onRetry}
           >
             Try again

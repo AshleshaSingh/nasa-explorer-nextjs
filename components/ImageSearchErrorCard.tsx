@@ -20,11 +20,11 @@ export function ImageSearchErrorCard({
         <p className="text-xs text-danger-600 max-w-sm">{message}</p>
 
         <Button
-          color="danger"
-          variant="flat"
-          size="sm"
-          onPress={onRetry}
           className="mt-2"
+          color="danger"
+          size="sm"
+          variant="flat"
+          onPress={onRetry}
         >
           Retry
         </Button>

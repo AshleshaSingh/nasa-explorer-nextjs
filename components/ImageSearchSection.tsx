@@ -1,5 +1,7 @@
 "use client";
 
+import type { NasaImageItem } from "@/types/nasa";
+
 import React from "react";
 import {
   Card,
@@ -10,7 +12,7 @@ import {
   Button,
   Image,
 } from "@nextui-org/react";
-import type { NasaImageItem } from "@/types/nasa";
+
 import { ImageSearchSkeleton } from "./ImageSearchSkeleton";
 import { ImageSearchEmptyCard } from "./ImageSearchEmptyCard";
 import { ImageSearchErrorCard } from "./ImageSearchErrorCard";
@@ -57,7 +59,7 @@ export interface ImageSearchSectionProps {
   // Retry behavior logic
   onRetrySearch: () => void;
 
-  isQueryValid?: boolean;
+  _isQueryValid?: boolean;
 }
 
 /**
@@ -66,6 +68,7 @@ export interface ImageSearchSectionProps {
  */
 function getThumbnailUrl(item: NasaImageItem): string | undefined {
   const firstLink = item.links?.[0];
+
   return firstLink?.href;
 }
 
@@ -94,7 +97,7 @@ export function ImageSearchSection({
   onSubmit,
   onLoadMore,
   onRetrySearch,
-  isQueryValid = true,
+  _isQueryValid = true,
 }: ImageSearchSectionProps) {
   const hasResults = items.length > 0;
 
@@ -122,28 +125,28 @@ export function ImageSearchSection({
         <CardBody>
           {/* The search form uses parent-provided onSubmit and query handlers. */}
           <form
-            onSubmit={onSubmit}
             className="flex flex-col md:flex-row gap-3 items-stretch md:items-end"
+            onSubmit={onSubmit}
           >
             <Input
-              type="text"
-              label="Search term"
-              placeholder="e.g. galaxy, nebula, moon"
-              value={query}
-              onValueChange={onQueryChange}
               isRequired
-              variant="flat"
               className="md:max-w-md"
               classNames={{
                 label: "mb-6", // keeps label from overlapping the text
               }}
+              label="Search term"
+              placeholder="e.g. galaxy, nebula, moon"
+              type="text"
+              value={query}
+              variant="flat"
+              onValueChange={onQueryChange}
             />
 
             <Button
-              type="submit"
-              color="primary"
               className="md:w-auto w-full"
+              color="primary"
               isDisabled={loading || !query.trim()}
+              type="submit"
             >
               {loading ? "Searching…" : "Search"}
             </Button>
@@ -204,9 +207,9 @@ export function ImageSearchSection({
                 >
                   {thumbUrl && (
                     <Image
-                      src={thumbUrl}
                       alt={title}
                       className="w-full h-56 object-cover"
+                      src={thumbUrl}
                     />
                   )}
 
@@ -230,10 +233,10 @@ export function ImageSearchSection({
           {hasMore && (
             <div className="flex justify-center mt-4">
               <Button
-                variant="bordered"
                 color="primary"
-                onPress={onLoadMore}
                 isDisabled={isLoadingMore}
+                variant="bordered"
+                onPress={onLoadMore}
               >
                 {isLoadingMore ? "Loading…" : "Load more"}
               </Button>
