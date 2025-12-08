@@ -16,6 +16,7 @@ import { apodFormSchema, type ApodFormData } from "@/types/apod";
 import { ApodSkeleton } from "./ApodSkeleton";
 import { ApodEmptyCard } from "./ApodEmptyCard";
 import { ApodErrorCard } from "./ApodErrorCard";
+import { useCustomToast } from "@/app/hooks/useCustomToast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -27,8 +28,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
  *  - validates the date on the client (Zod + React Hook Form)
  *  - calls the /api/apod endpoint
  *  - displays loading, empty, error, and result states
+ *  - shows toast notifications for success/error
  */
 export function ApodSearchSection() {
+  const { showSuccess, showError } = useCustomToast();
+  
   // UI states
   const [loading, setLoading] = useState(false); // controls spinner + disabling button
   const [error, setError] = useState<string | null>(null); // error message display from backend/network
@@ -62,6 +66,14 @@ export function ApodSearchSection() {
       const json = await res.json();
 
       if (!json.ok) {
+        // Show appropriate error toast based on error type
+        if (json.error.includes("API") || json.error.includes("fetch")) {
+          showError("NASA API error. Please try again later.");
+        } else if (json.error.includes("key") || json.error.includes("DEMO_KEY")) {
+          showError("Invalid API key. Please check your configuration.");
+        } else {
+          showError(json.error);
+        }
         setError(json.error || "Failed to load APOD. Please try again.");
         return;
       }
@@ -71,9 +83,12 @@ export function ApodSearchSection() {
         : json.data;
 
       setResult(apod);
+      showSuccess("APOD Loaded");
     } catch (err) {
       console.error(err);
-      setError("Network error. Please try again.");
+      const errorMessage = "Network error. Please check your connection.";
+      showError(errorMessage);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
