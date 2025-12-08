@@ -16,9 +16,11 @@ import type { ApodFormData } from "@/types/apod";
 import { ApodSkeleton } from "./ApodSkeleton";
 import { ApodEmptyCard } from "./ApodEmptyCard";
 import { ApodErrorCard } from "./ApodErrorCard";
+import { useCustomToast } from "@/app/hooks/useCustomToast";
 
 
 export function ApodSearchSection() { // this function stores whatever the user typed into the form (date).
+  const { showSuccess, showError } = useCustomToast();
   const [form, setForm] = useState<ApodFormData>({ date: "" });
   // UI states
   const [loading, setLoading] = useState(false); // controls spinner + disabling button
@@ -49,23 +51,33 @@ export function ApodSearchSection() { // this function stores whatever the user 
       return;
     }
 
-    setLoading(true); // turn on skeleton loading state
-
+    setLoading(true);
     try {
-      // send a request to backend route at /api/apod
       const res = await fetch(`/api/apod?date=${form.date}`);
-
-      // read backend's response
       const json = await res.json();
-      if (!json.ok) { setError(json.error); return; }
+
+      if (!json.ok) {
+        if (json.error.includes("API") || json.error.includes("fetch")) {
+          showError("NASA API error. Please try again later.");
+        } else if (json.error.includes("key") || json.error.includes("DEMO_KEY")) {
+          showError("Invalid API key. Please check your configuration.");
+        } else {
+          showError(json.error);
+        }
+        setError(json.error);
+        return;
+      }
+
       const apod = Array.isArray(json.data) ? json.data[0] : json.data;
       setResult(apod);
+      showSuccess("APOD Loaded");
     } catch (err) {
-      // internet issue or fetch error
       console.error(err);
-      setError("Network error. Please try again.");
+      const errorMessage = "Network error. Please check your connection.";
+      showError(errorMessage);
+      setError(errorMessage);
     } finally {
-      setLoading(false); // hide spinner
+      setLoading(false);
     }
   };
 
