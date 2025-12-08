@@ -17,10 +17,6 @@ export const siteConfig = {
   // Navigation items for the mobile menu (hamburger)
   navMenuItems: [
     {
-      label: "Home",
-      href: "/",
-    },
-    {
       label: "APOD",
       href: "/apod",
     },

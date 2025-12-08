@@ -48,11 +48,20 @@ export const Navbar = () => {
             </NavbarItem>
           ))}
         </ul>
+      </NavbarContent>
+      <NavbarContent
+        className="hidden sm:flex basis-1/5 sm:basis-full"
+        justify="end"
+      >
+        <ThemeSwitch />
+      </NavbarContent>
+      
         
         {/* Only show menu toggle on small screens */}
-        <NavbarMenuToggle className="sm:hidden" />
+        <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
+        <ThemeSwitch />
+        <NavbarMenuToggle />
       </NavbarContent>
-      <ThemeSwitch />
 
       <NavbarMenu>
         <div className="mx-4 mt-2 flex flex-col gap-2">
