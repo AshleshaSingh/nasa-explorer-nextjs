@@ -59,7 +59,7 @@ export interface ImageSearchSectionProps {
   // Retry behavior logic
   onRetrySearch: () => void;
 
-  _isQueryValid?: boolean;
+  isQueryValid?: boolean;
 }
 
 /**
@@ -97,7 +97,7 @@ export function ImageSearchSection({
   onSubmit,
   onLoadMore,
   onRetrySearch,
-  _isQueryValid = true,
+  isQueryValid = true,
 }: ImageSearchSectionProps) {
   const hasResults = items.length > 0;
 
