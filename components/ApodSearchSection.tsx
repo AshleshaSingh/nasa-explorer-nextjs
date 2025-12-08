@@ -11,52 +11,62 @@ import {
   Button,
   Image,
 } from "@heroui/react";
-import type { ApodResponse} from "@/types/nasa";
-import type { ApodFormData } from "@/types/apod";
+import type { ApodResponse } from "@/types/nasa";
+import { apodFormSchema, type ApodFormData } from "@/types/apod";
 import { ApodSkeleton } from "./ApodSkeleton";
 import { ApodEmptyCard } from "./ApodEmptyCard";
 import { ApodErrorCard } from "./ApodErrorCard";
 import { useCustomToast } from "@/app/hooks/useCustomToast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-
-export function ApodSearchSection() { // this function stores whatever the user typed into the form (date).
+/**
+ * Astronomy Picture of the Day search section.
+ *
+ * This component:
+ *  - stores whatever the user typed into the form (date)
+ *  - validates the date on the client (Zod + React Hook Form)
+ *  - calls the /api/apod endpoint
+ *  - displays loading, empty, error, and result states
+ *  - shows toast notifications for success/error
+ */
+export function ApodSearchSection() {
   const { showSuccess, showError } = useCustomToast();
-  const [form, setForm] = useState<ApodFormData>({ date: "" });
+  
   // UI states
   const [loading, setLoading] = useState(false); // controls spinner + disabling button
-  const [error, setError] = useState<string | null>(null); // error message display
+  const [error, setError] = useState<string | null>(null); // error message display from backend/network
   const [result, setResult] = useState<ApodResponse | null>(null); // APOD result from backend
 
-  //  update the date field
-  const handleDateChange = (value: string) => {
-    setForm({ date: value });
-  };
+  // Clamp the date input to today (no future dates).
+  const today = new Date();
+  const todayStr = today.toISOString().split("T")[0];
 
-  // front-end validation before sending to backend
-  const validateForm = (data: ApodFormData): string | null => {
-    if (!form.date) return "Please select a date.";
-    return null; // no issues
-  };
+  // React Hook Form setup using the Zod schema for the APOD form.
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<ApodFormData>({
+    resolver: zodResolver(apodFormSchema), // connect Zod validation
+    mode: "onChange", // validate as the user types/changes the date
+    defaultValues: {
+      date: "",
+    },
+  });
 
-  // when the user hits the submit button
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // stops the page from reloading
+  // submit handler (only called when the form is valid according to Zod)
+  const onSubmit = async (data: ApodFormData) => {
     setError(null);
     setResult(null);
-
-    // run validation before calling backend
-    const validationError = validateForm(form);
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
-
     setLoading(true);
+
     try {
-      const res = await fetch(`/api/apod?date=${form.date}`);
+      const res = await fetch(`/api/apod?date=${data.date}`);
       const json = await res.json();
 
       if (!json.ok) {
+        // Show appropriate error toast based on error type
         if (json.error.includes("API") || json.error.includes("fetch")) {
           showError("NASA API error. Please try again later.");
         } else if (json.error.includes("key") || json.error.includes("DEMO_KEY")) {
@@ -64,11 +74,14 @@ export function ApodSearchSection() { // this function stores whatever the user 
         } else {
           showError(json.error);
         }
-        setError(json.error);
+        setError(json.error || "Failed to load APOD. Please try again.");
         return;
       }
 
-      const apod = Array.isArray(json.data) ? json.data[0] : json.data;
+      const apod: ApodResponse = Array.isArray(json.data)
+        ? json.data[0]
+        : json.data;
+
       setResult(apod);
       showSuccess("APOD Loaded");
     } catch (err) {
@@ -95,32 +108,33 @@ export function ApodSearchSection() { // this function stores whatever the user 
         <CardBody>
           {/* form handling the date input */}
           <form
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col md:flex-row gap-3 items-stretch md:items-end"
           >
-            {/* controlled date input using HeroUI */}
+            {/* APOD date input (validated with Zod + RHF) */}
             <Input
               type="date"
               label="Date"
-              value={form.date}
-              onValueChange={handleDateChange}
-              isRequired // adds a * and required styling
+              isRequired
               variant="bordered"
               className="md:max-w-xs"
-              max={new Date().toISOString().split("T")[0]} // can't pick future
+              min="1995-06-16"
+              max={todayStr}
+              // connect this field to React Hook Form
+              {...register("date")}
+              // show validation state + message
+              isInvalid={!!errors.date}
+              errorMessage={errors.date?.message}
             />
 
-            {/* submit button 
-            UPDATED SUBMIT BUTTON
-            To remove spinner inside "Get APOD" button and let skeleton handle visual loading instead
-            Button now disables while loading and lets users focus on skeleton content instead of spinner inside button*/}
+            {/* Submit button is disabled while loading OR when the form is invalid */}
             <Button
               type="submit"
               color="primary"
-              isDisabled={loading} // can't double-click while loading
               className="md:w-auto w-full"
+              isDisabled={loading || !isValid}
             >
-              Get APOD
+              {loading ? "Loading..." : "Get APOD"}
             </Button>
           </form>
         </CardBody>
@@ -129,24 +143,22 @@ export function ApodSearchSection() { // this function stores whatever the user 
       {/* Loading Skeleton */}
       {loading && !result && <ApodSkeleton />}
 
-      {/* Branded Empty State */}
+      {/* Empty State (no result, no error, not loading) */}
       {!loading && !error && !result && <ApodEmptyCard />}
 
-      {/* Branded Error State */}
+      {/* Branded Error State for backend/network issues */}
       {error && <ApodErrorCard message={error} />}
 
-      {/* results card: shows NASA APOD data */}
+      {/* Result card: shows NASA APOD data */}
       {result && (
         <Card>
           <CardHeader className="flex flex-col items-start gap-1">
             <h2 className="text-lg font-semibold">{result.title}</h2>
-            <p className="text-xs text-default-400">
-              {result.date}
-            </p>
+            <p className="text-xs text-default-400">{result.date}</p>
           </CardHeader>
 
           <CardBody className="flex flex-col gap-4">
-            {/* NASA returns image, show it */}
+            {/* NASA returns image or video */}
             {result.media_type === "image" ? (
               <Image
                 src={result.url}
@@ -154,7 +166,6 @@ export function ApodSearchSection() { // this function stores whatever the user 
                 className="max-h-[450px] object-contain"
               />
             ) : (
-              // if video, show it embedded in the webpage
               <div className="relative w-full aspect-video">
                 <iframe
                   src={result.url}
@@ -165,13 +176,15 @@ export function ApodSearchSection() { // this function stores whatever the user 
               </div>
             )}
 
-            {/* explanation text */}
-            <p className="text-sm leading-relaxed">{result.explanation}</p>
+            {/* Explanation text */}
+            <p className="text-sm text-default-600 whitespace-pre-line">
+              {result.explanation}
+            </p>
           </CardBody>
 
-          {/* HD image button, show only if NASA returns an HD link */}
+          {/* Optional footer for HD image link */}
           {result.hdurl && (
-            <CardFooter>
+            <CardFooter className="flex justify-end">
               <Button
                 as="a"
                 href={result.hdurl}
