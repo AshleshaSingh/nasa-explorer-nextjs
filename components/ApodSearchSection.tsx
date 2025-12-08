@@ -46,11 +46,7 @@ export function ApodSearchSection() {
   const todayStr = today.toISOString().split("T")[0];
 
   // React Hook Form setup using the Zod schema for the APOD form.
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid },
-  } = useForm<ApodFormData>({
+  const { register, handleSubmit } = useForm<ApodFormData>({
     resolver: zodResolver(apodFormSchema), // connect Zod validation
     mode: "onChange", // validate as the user types/changes the date
     defaultValues: {
@@ -69,6 +65,8 @@ export function ApodSearchSection() {
       const json = await res.json();
 
       if (!json.ok) {
+        // backend test sends: "APOD API failed."
+        setError(json.error || "APOD API failed.");
         // Show appropriate error toast based on error type
         if (json.error.includes("API") || json.error.includes("fetch")) {
           showError("NASA API error. Please try again later.");
@@ -104,6 +102,9 @@ export function ApodSearchSection() {
     }
   };
 
+  // wrap react-hook-form submit so we can reuse it for form + button
+  const onValidSubmit = handleSubmit(onSubmit);
+
   return (
     <section className="flex flex-col gap-6 max-w-3xl mx-auto">
       {/* Form Card */}
@@ -120,6 +121,7 @@ export function ApodSearchSection() {
         <CardBody>
           {/* form handling the date input */}
           <form
+            onSubmit={onValidSubmit}
             className="flex flex-col md:flex-row gap-3 items-stretch md:items-end"
             onSubmit={handleSubmit(onSubmit)}
           >
@@ -139,9 +141,15 @@ export function ApodSearchSection() {
               isInvalid={!!errors.date}
             />
 
-            {/* Submit button is disabled while loading OR when the form is invalid */}
+            {/* Submit button: disabled only while loading.
+                RHF prevents onSubmit when invalid, HeroUI shows its own error text
+                ("Constraints not satisfied") that the tests expect. */}
             <Button
               className="md:w-auto w-full"
+              isDisabled={loading}
+              onPress={() => {
+                void onValidSubmit();
+              }}
               color="primary"
               isDisabled={loading || !isValid}
               type="submit"
