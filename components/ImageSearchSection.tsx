@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import {
   Card,
   CardHeader,
@@ -7,31 +8,32 @@ import {
   CardFooter,
   Input,
   Button,
-  Spinner,
   Image,
 } from "@nextui-org/react";
-import { ErrorCard } from "@/components/error";
-import type { NasaImageItem, NasaImageSearchResult } from "@/types/nasa";
+import type { NasaImageItem } from "@/types/nasa";
+import { ImageSearchSkeleton } from "./ImageSearchSkeleton";
+import { ImageSearchEmptyCard } from "./ImageSearchEmptyCard";
+import { ImageSearchErrorCard } from "./ImageSearchErrorCard";
 
 /**
  * Props for the ImageSearchSection component.
- * The parent (/images/page.tsx) owns the state and API logic,
+* The parent (/images/page.tsx) owns the state and API logic,
  * and passes everything down as props so this component stays
  * focused on UI rendering and user interactions.
  */
 export interface ImageSearchSectionProps {
-  // Controlled search value (text in the input).
+// Controlled search value (text in the input).
   query: string;
-  // Handler called whenever the user types in the search box.
+// Handler called whenever the user types in the search box.
   onQueryChange: (value: string) => void;
 
-  // List of items returned from the NASA Image & Video Library.
+// List of items returned from the NASA Image & Video Library.
   items: NasaImageItem[];
 
   // Optional total hits value from NASA metadata (can be null if unknown).
   totalHits: number | null;
 
-  // True while the initial search request is in progress.
+// True while the initial search request is in progress.
   loading: boolean;
 
   // True while a "Load more" pagination request is running.
@@ -43,11 +45,17 @@ export interface ImageSearchSectionProps {
   // Optional error message to show to the user.
   error: string | null;
 
+  /** True only after a search has been submitted at least once. */
+  hasSearched: boolean;
+
   // Called when the search form is submitted (e.g., user presses "Search").
   onSubmit: (event: React.FormEvent) => void;
 
   // Called when the user clicks the "Load more" button.
   onLoadMore: () => void;
+
+  // Retry behavior logic
+  onRetrySearch: () => void;
 }
 
 /**
@@ -80,8 +88,10 @@ export function ImageSearchSection({
   isLoadingMore,
   hasMore,
   error,
+  hasSearched,
   onSubmit,
   onLoadMore,
+  onRetrySearch,
 }: ImageSearchSectionProps) {
   const hasResults = items.length > 0;
 
@@ -92,12 +102,11 @@ export function ImageSearchSection({
         <h1 className="text-2xl font-semibold mb-2">NASA Image Search</h1>
         <p className="text-sm text-default-500">
           Search the NASA Image and Video Library for astronomy-related images.
-          Try keywords like &quot;galaxy&quot;, &quot;nebula&quot; or
-          &quot;moon&quot;.
+          Try keywords like &quot;galaxy&quot;, &quot;nebula&quot; or &quot;moon&quot;.
         </p>
       </section>
 
-      {/* Search form card */}
+      {/* Search Form card */}
       <Card>
         <CardHeader className="flex flex-col items-start gap-2">
           <h2 className="text-lg font-semibold">Search images</h2>
@@ -122,8 +131,7 @@ export function ImageSearchSection({
               variant="flat"
               className="md:max-w-md"
               classNames={{
-                // Extra spacing so the label does not overlap the text.
-                label: "mb-6",
+                label: "mb-6", // keeps label from overlapping the text
               }}
             />
 
@@ -131,27 +139,16 @@ export function ImageSearchSection({
               type="submit"
               color="primary"
               className="md:w-auto w-full"
-              isDisabled={loading}
+              isDisabled={loading || !query.trim()}   
             >
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <Spinner size="sm" />
-                  <span>Searching...</span>
-                </div>
-              ) : (
-                "Search"
-              )}
+              {loading ? "Searching…" : "Search"}
             </Button>
           </form>
 
-          {/* Error message using shared ErrorCard */}
+          {/* Error message (validation or API) */}
           {error && (
             <div className="mt-4">
-              <ErrorCard
-                title="Image search error"
-                message={error}
-                onRetry={onLoadMore /* or re-run last search; can adjust */}
-              />
+              <ImageSearchErrorCard message={error} onRetry={onRetrySearch} />
             </div>
           )}
         </CardBody>
@@ -164,28 +161,16 @@ export function ImageSearchSection({
         )}
       </Card>
 
-      {/* Loading state for initial search (no results yet). */}
-      {loading && !hasResults && !error && (
-        <Card>
-          <CardBody className="flex items-center justify-center py-10">
-            <Spinner size="lg" />
-          </CardBody>
-        </Card>
+      {/* Loading skeleton for initial search */}
+      {loading && !hasResults && !error && <ImageSearchSkeleton />}
+
+      {/* Empty results AFTER a search has been performed */}
+      {!loading && !error && !hasResults && hasSearched && query.trim() !== "" && (
+        <ImageSearchEmptyCard query={query} />
       )}
 
-      {/* Empty state after the user has searched but got no results. */}
-      {!loading && !error && !hasResults && query.trim() !== "" && (
-        <Card>
-          <CardBody className="text-sm text-default-500">
-            No results found for{" "}
-            <span className="font-semibold">{query.trim()}</span>. Try a
-            different keyword.
-          </CardBody>
-        </Card>
-      )}
-
-      {/* Hint before any search is performed. */}
-      {!loading && !error && !hasResults && query.trim() === "" && (
+      {/* Hint BEFORE any search is performed */}
+      {!loading && !error && !hasResults && !hasSearched && (
         <Card>
           <CardBody className="text-sm text-default-500">
             Start by entering a search term above and clicking{" "}
@@ -194,7 +179,7 @@ export function ImageSearchSection({
         </Card>
       )}
 
-      {/* Results grid with optional pagination controls. */}
+      {/* Results grid + pagination */}
       {hasResults && (
         <section className="flex flex-col gap-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -202,7 +187,6 @@ export function ImageSearchSection({
               const data = item.data?.[0];
               const thumbUrl = getThumbnailUrl(item);
               const title = data?.title ?? "Untitled image";
-
               const date =
                 data?.date_created
                   ? new Date(data.date_created).toLocaleDateString()
@@ -211,9 +195,8 @@ export function ImageSearchSection({
               return (
                 <Card
                   key={data?.nasa_id ?? Math.random()}
-                  className="h-full flex flex-col"
+                  className="rounded-xl overflow-hidden bg-white dark:bg-default-100 shadow-sm hover:shadow-lg transition-shadow duration-200 cursor-pointer"
                 >
-                  {/* Thumbnail image (if NASA provided one). */}
                   {thumbUrl && (
                     <Image
                       src={thumbUrl}
@@ -247,14 +230,7 @@ export function ImageSearchSection({
                 onPress={onLoadMore}
                 isDisabled={isLoadingMore}
               >
-                {isLoadingMore ? (
-                  <div className="flex items-center gap-2">
-                    <Spinner size="sm" />
-                    <span>Loading more…</span>
-                  </div>
-                ) : (
-                  "Load more"
-                )}
+                {isLoadingMore ? "Loading…" : "Load more"}
               </Button>
             </div>
           )}
