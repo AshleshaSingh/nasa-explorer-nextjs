@@ -15,6 +15,7 @@ import {
   Image,
 } from "@nextui-org/react";
 import { ErrorCard } from "@/components/error";
+import { useCustomToast } from "../hooks/useCustomToast";
 
 /**
  * Small helper to extract a thumbnail URL from a NASA image item.
@@ -39,6 +40,7 @@ function getThumbnailUrl(item: NasaImageItem): string | undefined {
  */
 export default function NasaImageSearchPage() {
 
+  const { showSuccess, showError, showInfo } = useCustomToast(); // Use custom hook
   // search term entered by the user
   const [query, setQuery] = useState("");
   const [queryError, setQueryError] = useState<string | null>(null);
@@ -49,7 +51,6 @@ export default function NasaImageSearchPage() {
   // handle input changes and clear/set errors live
   const handleQueryChange = (value: string) => {
     setQuery(value);
-
     if (value.trim().length === 0) {
       setQueryError("Please enter a search term.");
     } else {
@@ -59,19 +60,15 @@ export default function NasaImageSearchPage() {
 
   // List of items returned from the API.
   const [items, setItems] = useState<NasaImageItem[]>([]);
-
   // Optional total hits value returned by NASA (may be null).
   const [totalHits, setTotalHits] = useState<number | null>(null);
-
   // Page number for pagination.
   const [page, setPage] = useState(1);
-
   // Top-level UI flags.
   const [loading, setLoading] = useState(false); // initial search
   const [isLoadingMore, setIsLoadingMore] = useState(false); // pagination
   const [hasMore, setHasMore] = useState(true); // whether to show "Load more"
   const [error, setError] = useState<string | null>(null);
-
   // track if the user has actually triggered a search
   const [hasSearched, setHasSearched] = useState(false);
 
@@ -86,7 +83,9 @@ export default function NasaImageSearchPage() {
 
     // Basic client-side validation: require a non-empty query.
     if (!trimmedQuery) {
-      setError("Please enter a search term.");
+      const errorMsg = "Please enter a search term.";
+      showError(errorMsg);
+      setError(errorMsg);
       return;
     }
 
@@ -118,14 +117,20 @@ export default function NasaImageSearchPage() {
 
       const res = await fetch(`/api/images?${params.toString()}`);
 
-      const data = (await res.json()) as
-        | NasaImageSearchResult
-        | { message?: string };
+      const data = (await res.json()) as NasaImageSearchResult | { message?: string };
 
       if (!res.ok) {
-        const msg =
-          (data as any).message ??
+        const msg = (data as any).message ??
           "Something went wrong while fetching NASA images.";
+          if (msg.includes("API") || msg.includes("fetch")) {
+          showError("NASA API error. Please try again later.");
+        } else if (msg.includes("key") || msg.includes("DEMO_KEY")) {
+          showError("Invalid API key. Please check your configuration.");
+        } else if (msg.includes("invalid") || msg.includes("search")) {
+          showError("Invalid search query. Please try different keywords.");
+        } else {
+          showError(msg);
+        }
         setError(msg);
 
         if (mode === "reset") {
@@ -133,7 +138,6 @@ export default function NasaImageSearchPage() {
           setHasMore(false);
           setTotalHits(null);
         }
-
         return;
       }
 
@@ -165,10 +169,23 @@ export default function NasaImageSearchPage() {
         // Fallback: if this page returned no items, assume there are no more.
         return newItems.length > 0;
       });
+
+       // Update the toast call in runSearch function:
+        if (mode === "reset") {
+          if (newItems.length > 0) {
+            showSuccess(`Images Loaded (${newItems.length} results)`);
+          } else {
+            showInfo("Search completed (no results found)"); // Changed from showSuccess to showInfo
+          }
+        } else {
+          showSuccess(`Loaded ${newItems.length} more images`);
+        }
+
     } catch (err) {
       console.error(err);
-      setError("Network error. Please try again.");
-
+      const errorMsg = "Network error. Please check your connection.";
+      showError(errorMsg);
+      setError(errorMsg);
       if (mode === "reset") {
         setItems([]);
         setHasMore(false);
@@ -194,7 +211,9 @@ export default function NasaImageSearchPage() {
 
     // block submit if query is invalid
     if (!trimmed) {
-      setQueryError("Please enter a search term.");
+      const errorMsg = "Please enter a search term.";
+      showError(errorMsg);
+      setQueryError(errorMsg);
       return;
     }
 
