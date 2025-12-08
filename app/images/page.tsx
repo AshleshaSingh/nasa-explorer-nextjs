@@ -27,8 +27,6 @@ export default function NasaImageSearchPage() {
   // search term entered by the user
   const [query, setQuery] = useState("");
   const [queryError, setQueryError] = useState<string | null>(null);
-  // derived validity flag (non-empty after trimming)
-  const isQueryValid = query.trim().length > 0;
 
   // List of items returned from the API.
   const [items, setItems] = useState<NasaImageItem[]>([]);
@@ -243,7 +241,6 @@ export default function NasaImageSearchPage() {
       hasMore={hasMore}
       hasSearched={hasSearched}
       isLoadingMore={isLoadingMore}
-      isQueryValid={isQueryValid} // Pass the derived validity flag for button disabling
       items={items}
       loading={loading}
       query={query}

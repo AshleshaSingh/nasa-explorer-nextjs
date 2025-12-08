@@ -97,9 +97,11 @@ export function ImageSearchSection({
   onSubmit,
   onLoadMore,
   onRetrySearch,
-  isQueryValid = true,
 }: ImageSearchSectionProps) {
   const hasResults = items.length > 0;
+
+  // Derive valid/invalid state from query
+  const isQueryValid = query.trim().length > 0;
 
   return (
     <main className="flex flex-col gap-6 max-w-6xl mx-auto px-4 py-8">
@@ -145,7 +147,7 @@ export function ImageSearchSection({
             <Button
               className="md:w-auto w-full"
               color="primary"
-              isDisabled={loading || !query.trim()}
+              isDisabled={loading || !isQueryValid}
               type="submit"
             >
               {loading ? "Searching…" : "Search"}
