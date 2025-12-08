@@ -1,5 +1,6 @@
 import React from "react";
 import userEvent from "@testing-library/user-event";
+import { renderWithProviders } from "./test-utils";
 
 import {
   describe,
@@ -76,7 +77,8 @@ describe("NASA Image Search UI", () => {
 
   // 1) accessibility / initial behavior: button should be disabled with empty query
   it("disables the search button when the query is empty", () => {
-    render(<NasaImageSearchPage />);
+    renderWithProviders(<NasaImageSearchPage />);
+
 
     const button = getSearchButton();
     expect(button).toBeDisabled();
@@ -87,7 +89,7 @@ describe("NASA Image Search UI", () => {
     const user = userEvent.setup();
     const fetchSpy = vi.spyOn(global, "fetch");
 
-    render(<NasaImageSearchPage />);
+    renderWithProviders(<NasaImageSearchPage />);
 
     const input = screen.getByLabelText(/search term/i);
 
@@ -107,7 +109,7 @@ describe("NASA Image Search UI", () => {
 
   // 3) validation: typing a valid query clears error and enables button
   it("clears validation error and enables the search button when the query becomes valid", () => {
-    render(<NasaImageSearchPage />);
+    renderWithProviders(<NasaImageSearchPage />);
 
     const input = getInput();
     const button = getSearchButton();
@@ -129,7 +131,7 @@ describe("NASA Image Search UI", () => {
   it("runs a search and renders image results when the API succeeds", async () => {
     mockImageSearchSuccess();
 
-    render(<NasaImageSearchPage />);
+    renderWithProviders(<NasaImageSearchPage />);
 
     const input = getInput();
     const button = getSearchButton();
@@ -158,7 +160,7 @@ describe("NASA Image Search UI", () => {
     const errorMessage = "Image search failed.";
     mockImageSearchError(errorMessage);
 
-    render(<NasaImageSearchPage />);
+    renderWithProviders(<NasaImageSearchPage />);
 
     const input = getInput();
     const button = getSearchButton();

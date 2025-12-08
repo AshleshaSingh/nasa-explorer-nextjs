@@ -7,6 +7,7 @@ import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { renderWithProviders } from "./test-utils";
 
 import NasaImageSearchPage from "@/app/images/page";
 
@@ -60,7 +61,7 @@ const mockPage1 = {
           json: async () => mockPage2,
         } as any);
   
-      render(<NasaImageSearchPage />);
+      renderWithProviders(<NasaImageSearchPage />);
   
       // Type query and submit
       const input = screen.getByPlaceholderText(/e\.g\. galaxy/i);
@@ -97,7 +98,7 @@ const mockPage1 = {
           json: async () => ({ message: "Failed to load more" }),
         } as any);
   
-      render(<NasaImageSearchPage />);
+      renderWithProviders(<NasaImageSearchPage />);
   
       const input = screen.getByPlaceholderText(/e\.g\. galaxy/i);
       fireEvent.change(input, { target: { value: "galaxy" } });
@@ -111,8 +112,8 @@ const mockPage1 = {
       fireEvent.click(loadMoreButton);
   
       // Match whatever error text you show in the component
-      expect(
-        await screen.findByText(/failed to load more/i)
-      ).toBeInTheDocument();
-    });
+      // FIX: Handle multiple elements with same text
+      const errorElements = await screen.findAllByText(/failed to load more/i);
+      expect(errorElements.length).toBeGreaterThan(0);
+      });
   });  
