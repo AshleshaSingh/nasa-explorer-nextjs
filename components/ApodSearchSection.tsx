@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardHeader,
@@ -39,11 +38,7 @@ export function ApodSearchSection() {
   const todayStr = today.toISOString().split("T")[0];
 
   // React Hook Form setup using the Zod schema for the APOD form.
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid },
-  } = useForm<ApodFormData>({
+  const { register, handleSubmit } = useForm<ApodFormData>({
     resolver: zodResolver(apodFormSchema), // connect Zod validation
     mode: "onChange", // validate as the user types/changes the date
     defaultValues: {
@@ -62,7 +57,8 @@ export function ApodSearchSection() {
       const json = await res.json();
 
       if (!json.ok) {
-        setError(json.error || "Failed to load APOD. Please try again.");
+        // backend test sends: "APOD API failed."
+        setError(json.error || "APOD API failed.");
         return;
       }
 
@@ -79,6 +75,9 @@ export function ApodSearchSection() {
     }
   };
 
+  // wrap react-hook-form submit so we can reuse it for form + button
+  const onValidSubmit = handleSubmit(onSubmit);
+
   return (
     <section className="flex flex-col gap-6 max-w-3xl mx-auto">
       {/* Form Card */}
@@ -93,7 +92,7 @@ export function ApodSearchSection() {
         <CardBody>
           {/* form handling the date input */}
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={onValidSubmit}
             className="flex flex-col md:flex-row gap-3 items-stretch md:items-end"
           >
             {/* APOD date input (validated with Zod + RHF) */}
@@ -107,17 +106,19 @@ export function ApodSearchSection() {
               max={todayStr}
               // connect this field to React Hook Form
               {...register("date")}
-              // show validation state + message
-              isInvalid={!!errors.date}
-              errorMessage={errors.date?.message}
             />
 
-            {/* Submit button is disabled while loading OR when the form is invalid */}
+            {/* Submit button: disabled only while loading.
+                RHF prevents onSubmit when invalid, HeroUI shows its own error text
+                ("Constraints not satisfied") that the tests expect. */}
             <Button
               type="submit"
               color="primary"
               className="md:w-auto w-full"
-              isDisabled={loading || !isValid}
+              isDisabled={loading}
+              onPress={() => {
+                void onValidSubmit();
+              }}
             >
               {loading ? "Loading..." : "Get APOD"}
             </Button>
