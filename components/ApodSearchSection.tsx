@@ -46,7 +46,11 @@ export function ApodSearchSection() {
   const todayStr = today.toISOString().split("T")[0];
 
   // React Hook Form setup using the Zod schema for the APOD form.
-  const { register, handleSubmit } = useForm<ApodFormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<ApodFormData>({
     resolver: zodResolver(apodFormSchema), // connect Zod validation
     mode: "onChange", // validate as the user types/changes the date
     defaultValues: {
@@ -66,20 +70,21 @@ export function ApodSearchSection() {
 
       if (!json.ok) {
         // backend test sends: "APOD API failed."
-        setError(json.error || "APOD API failed.");
+        const backendError = json.error || "APOD API failed.";
+
         // Show appropriate error toast based on error type
-        if (json.error.includes("API") || json.error.includes("fetch")) {
+        if (backendError.includes("API") || backendError.includes("fetch")) {
           showError("NASA API error. Please try again later.");
         } else if (
-          json.error.includes("key") ||
-          json.error.includes("DEMO_KEY")
+          backendError.includes("key") ||
+          backendError.includes("DEMO_KEY")
         ) {
           showError("Invalid API key. Please check your configuration.");
         } else {
-          showError(json.error);
+          showError(backendError);
         }
-        setError(json.error || "Failed to load APOD. Please try again.");
 
+        setError(backendError);
         return;
       }
 
@@ -102,9 +107,6 @@ export function ApodSearchSection() {
     }
   };
 
-  // wrap react-hook-form submit so we can reuse it for form + button
-  const onValidSubmit = handleSubmit(onSubmit);
-
   return (
     <section className="flex flex-col gap-6 max-w-3xl mx-auto">
       {/* Form Card */}
@@ -121,9 +123,8 @@ export function ApodSearchSection() {
         <CardBody>
           {/* form handling the date input */}
           <form
-            onSubmit={onValidSubmit}
-            className="flex flex-col md:flex-row gap-3 items-stretch md:items-end"
             onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col md:flex-row gap-3 items-stretch md:items-end"
           >
             {/* APOD date input (validated with Zod + RHF) */}
             <Input
@@ -141,18 +142,12 @@ export function ApodSearchSection() {
               isInvalid={!!errors.date}
             />
 
-            {/* Submit button: disabled only while loading.
-                RHF prevents onSubmit when invalid, HeroUI shows its own error text
-                ("Constraints not satisfied") that the tests expect. */}
+            {/* Submit button: disabled while loading or when form is invalid */}
             <Button
               className="md:w-auto w-full"
-              isDisabled={loading}
-              onPress={() => {
-                void onValidSubmit();
-              }}
               color="primary"
-              isDisabled={loading || !isValid}
               type="submit"
+              isDisabled={loading || !isValid}
             >
               {loading ? "Loading..." : "Get APOD"}
             </Button>
