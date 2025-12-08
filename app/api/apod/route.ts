@@ -29,13 +29,10 @@ export async function GET(req: Request) {
     const data: ApodResult = await fetchApod({
       date,
       count,
-      thumbs
+      thumbs,
     });
 
-    return NextResponse.json(
-      { ok: true, data },
-      { status: 200 },
-    );
+    return NextResponse.json({ ok: true, data }, { status: 200 });
   } catch (error: any) {
     console.error("Error in /api/apod:", error);
 

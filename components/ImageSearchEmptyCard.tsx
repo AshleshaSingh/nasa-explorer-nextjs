@@ -10,8 +10,7 @@ export function ImageSearchEmptyCard({ query }: { query?: string }) {
         <h3 className="text-lg font-semibold text-default-700">
           {query ? (
             <>
-              No results found for{" "}
-              <span className="font-bold">{query}</span>.
+              No results found for <span className="font-bold">{query}</span>.
             </>
           ) : (
             "Start by entering a search term!"

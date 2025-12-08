@@ -10,9 +10,8 @@ export default function GlobalError({
   reset,
 }: {
   error: Error & { digest?: string }; // the thrown error object
-  reset: () => void;                  // callback that reloads the route
+  reset: () => void; // callback that reloads the route
 }) {
-  
   // logging error to the console
   useEffect(() => {
     console.error("App error boundary:", error);

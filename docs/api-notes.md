@@ -14,19 +14,19 @@ GET https://api.nasa.gov/planetary/apod
 
 ### 1.2 Required Query Parameters
 
-| Name    | Type   | Required | Description    |
-|---------|--------|----------|----------------|
-| api_key | string | ✅       | NASA API key.  |
+| Name    | Type   | Required | Description   |
+| ------- | ------ | -------- | ------------- |
+| api_key | string | ✅       | NASA API key. |
 
 ### 1.3 Optional Query Parameters
 
-| Name        | Type    | Description                                |
-|-------------|---------|--------------------------------------------|
-| date        | string  | Specific date (`YYYY-MM-DD`).              |
-| start_date  | string  | Start of date range (`YYYY-MM-DD`).        |
-| end_date    | string  | End of date range (`YYYY-MM-DD`).          |
-| count       | number  | Number of random APOD items to return.     |
-| thumbs      | boolean | Include thumbnail URLs for video results.  |
+| Name       | Type    | Description                               |
+| ---------- | ------- | ----------------------------------------- |
+| date       | string  | Specific date (`YYYY-MM-DD`).             |
+| start_date | string  | Start of date range (`YYYY-MM-DD`).       |
+| end_date   | string  | End of date range (`YYYY-MM-DD`).         |
+| count      | number  | Number of random APOD items to return.    |
+| thumbs     | boolean | Include thumbnail URLs for video results. |
 
 ### 1.4 Example Request
 
@@ -84,13 +84,13 @@ GET https://images-api.nasa.gov/search
 
 ### 2.2 Key Query Parameters
 
-| Name        | Type   | Description                                      |
-|-------------|--------|--------------------------------------------------|
-| q           | string | Search term (required).                          |
-| media_type  | string | One or more of: `image`, `video`, `audio`.      |
-| year_start  | string | Filter results starting from this year.         |
-| year_end    | string | Filter results up to this year.                 |
-| page        | number | Pagination (page index, starting from 1).       |
+| Name       | Type   | Description                                |
+| ---------- | ------ | ------------------------------------------ |
+| q          | string | Search term (required).                    |
+| media_type | string | One or more of: `image`, `video`, `audio`. |
+| year_start | string | Filter results starting from this year.    |
+| year_end   | string | Filter results up to this year.            |
+| page       | number | Pagination (page index, starting from 1).  |
 
 ### 2.3 Example Requests
 

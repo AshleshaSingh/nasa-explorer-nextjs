@@ -20,17 +20,26 @@ vi.mock("@/components/ApodSkeleton", () => ({
 vi.mock("@/components/ApodEmptyCard", () => ({
   ApodEmptyCard: () => (
     <div data-testid="apod-empty">
-      <p className="text-lg font-medium text-default-700">No APOD loaded yet.</p>
-      <p className="text-sm text-default-500">Pick a date above and hit submit!</p>
+      <p className="text-lg font-medium text-default-700">
+        No APOD loaded yet.
+      </p>
+      <p className="text-sm text-default-500">
+        Pick a date above and hit submit!
+      </p>
     </div>
   ),
 }));
 
 vi.mock("@/components/ApodErrorCard", () => ({
   ApodErrorCard: ({ message }: { message: string }) => (
-    <div data-testid="apod-error-card" className="border border-error-500 bg-error-50">
+    <div
+      data-testid="apod-error-card"
+      className="border border-error-500 bg-error-50"
+    >
       <div className="text-4xl text-error-500">Error</div>
-      <p className="text-sm text-error-700 font-medium">Resubmit with a valid date.</p>
+      <p className="text-sm text-error-700 font-medium">
+        Resubmit with a valid date.
+      </p>
       <p className="text-xs text-error-600">{message}</p>
     </div>
   ),
@@ -92,15 +101,15 @@ describe("ApodSearchSection integration", () => {
     // fill date + submit
     const dateInput = getDateInput();
     fireEvent.change(dateInput, { target: { value: mockApod.date } });
-    
+
     // Get the form and submit it properly
-    const form = dateInput.closest('form')!;
+    const form = dateInput.closest("form")!;
     fireEvent.submit(form);
 
     // backend should be called with the date
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining(`/api/apod?date=${mockApod.date}`)
+        expect.stringContaining(`/api/apod?date=${mockApod.date}`),
       );
     });
 
@@ -119,14 +128,14 @@ describe("ApodSearchSection integration", () => {
     // Get the submit button - it should be DISABLED because form is invalid
     const submitButton = getSubmitButton();
     expect(submitButton).toBeDisabled();
-    expect(submitButton).toHaveAttribute('disabled');
+    expect(submitButton).toHaveAttribute("disabled");
 
     // Try to click (won't work because disabled)
     fireEvent.click(submitButton);
 
     // No network request should be made because button is disabled
     expect(global.fetch).not.toHaveBeenCalled();
-    
+
     // Additional check: the date input should indicate it's required
     const dateInput = getDateInput();
     expect(dateInput).toBeRequired();
@@ -142,14 +151,16 @@ describe("ApodSearchSection integration", () => {
 
     const dateInput = getDateInput();
     fireEvent.change(dateInput, { target: { value: "2024-01-02" } });
-    
-    const form = dateInput.closest('form')!;
+
+    const form = dateInput.closest("form")!;
     fireEvent.submit(form);
 
     // error message from backend should appear
     // The component shows "API error" in the small text and "Resubmit with a valid date." as main message
     await waitFor(() => {
-      expect(screen.getByText("Resubmit with a valid date.")).toBeInTheDocument();
+      expect(
+        screen.getByText("Resubmit with a valid date."),
+      ).toBeInTheDocument();
       expect(screen.getByText("API error")).toBeInTheDocument();
     });
   });
@@ -175,8 +186,8 @@ describe("ApodSearchSection integration", () => {
     // perform a successful search
     const dateInput = getDateInput();
     fireEvent.change(dateInput, { target: { value: mockApod.date } });
-    
-    const form = dateInput.closest('form')!;
+
+    const form = dateInput.closest("form")!;
     fireEvent.submit(form);
 
     // wait for result card

@@ -32,7 +32,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
  */
 export function ApodSearchSection() {
   const { showSuccess, showError } = useCustomToast();
-  
+
   // UI states
   const [loading, setLoading] = useState(false); // controls spinner + disabling button
   const [error, setError] = useState<string | null>(null); // error message display from backend/network
@@ -69,7 +69,10 @@ export function ApodSearchSection() {
         // Show appropriate error toast based on error type
         if (json.error.includes("API") || json.error.includes("fetch")) {
           showError("NASA API error. Please try again later.");
-        } else if (json.error.includes("key") || json.error.includes("DEMO_KEY")) {
+        } else if (
+          json.error.includes("key") ||
+          json.error.includes("DEMO_KEY")
+        ) {
           showError("Invalid API key. Please check your configuration.");
         } else {
           showError(json.error);
@@ -99,7 +102,9 @@ export function ApodSearchSection() {
       {/* Form Card */}
       <Card>
         <CardHeader className="flex flex-col items-start gap-2">
-          <h1 className="text-xl font-semibold">Astronomy Picture of the Day</h1>
+          <h1 className="text-xl font-semibold">
+            Astronomy Picture of the Day
+          </h1>
           <p className="text-sm text-default-500">
             Pick a date to see NASA&apos;s daily picture.
           </p>

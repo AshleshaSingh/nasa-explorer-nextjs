@@ -51,7 +51,8 @@ export default function RootLayout({
               <footer className="w-full border-t border-default-100 mt-10">
                 <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 px-4 py-4 text-xs text-default-500">
                   <span>
-                    © {new Date().getFullYear()} NASA Explorer — CSU Web Engineering (CPSC 6175)
+                    © {new Date().getFullYear()} NASA Explorer — CSU Web
+                    Engineering (CPSC 6175)
                   </span>
 
                   <a
@@ -65,7 +66,7 @@ export default function RootLayout({
                 </div>
               </footer>
             </div>
-        </ToastProvider>
+          </ToastProvider>
         </Providers>
       </body>
     </html>

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import {Card, CardBody} from "@heroui/react";
+import { Card, CardBody } from "@heroui/react";
 
 // Branded Empty State Card
 export function ApodEmptyCard() {

@@ -108,12 +108,15 @@ export default function NasaImageSearchPage() {
 
       const res = await fetch(`/api/images?${params.toString()}`);
 
-      const data = (await res.json()) as NasaImageSearchResult | { message?: string };
+      const data = (await res.json()) as
+        | NasaImageSearchResult
+        | { message?: string };
 
       if (!res.ok) {
-        const msg = (data as any).message ??
+        const msg =
+          (data as any).message ??
           "Something went wrong while fetching NASA images.";
-          if (msg.includes("API") || msg.includes("fetch")) {
+        if (msg.includes("API") || msg.includes("fetch")) {
           showError("NASA API error. Please try again later.");
         } else if (msg.includes("key") || msg.includes("DEMO_KEY")) {
           showError("Invalid API key. Please check your configuration.");
@@ -161,17 +164,16 @@ export default function NasaImageSearchPage() {
         return newItems.length > 0;
       });
 
-       // Update the toast call in runSearch function:
-        if (mode === "reset") {
-          if (newItems.length > 0) {
-            showSuccess(`Images Loaded (${newItems.length} results)`);
-          } else {
-            showInfo("Search completed (no results found)"); // Changed from showSuccess to showInfo
-          }
+      // Update the toast call in runSearch function:
+      if (mode === "reset") {
+        if (newItems.length > 0) {
+          showSuccess(`Images Loaded (${newItems.length} results)`);
         } else {
-          showSuccess(`Loaded ${newItems.length} more images`);
+          showInfo("Search completed (no results found)"); // Changed from showSuccess to showInfo
         }
-
+      } else {
+        showSuccess(`Loaded ${newItems.length} more images`);
+      }
     } catch (err) {
       console.error(err);
       const errorMsg = "Network error. Please check your connection.";
@@ -230,7 +232,7 @@ export default function NasaImageSearchPage() {
       loading={loading}
       isLoadingMore={isLoadingMore}
       hasMore={hasMore}
-      error={error ?? queryError}     
+      error={error ?? queryError}
       hasSearched={hasSearched}
       isQueryValid={isQueryValid} // Pass the derived validity flag for button disabling
       onSubmit={handleSubmit}

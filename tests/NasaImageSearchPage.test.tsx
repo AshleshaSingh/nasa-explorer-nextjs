@@ -2,20 +2,8 @@ import React from "react";
 import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "./test-utils";
 
-import {
-  describe,
-  it,
-  expect,
-  vi,
-  beforeEach,
-  afterEach,
-} from "vitest";
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-} from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import NasaImageSearchPage from "../app/images/page";
 
 const originalFetch = global.fetch;
@@ -63,7 +51,9 @@ describe("NASA Image Search UI", () => {
   }
 
   // helper to create an error response from the API
-  function mockImageSearchError(message = "Something went wrong while fetching NASA images.") {
+  function mockImageSearchError(
+    message = "Something went wrong while fetching NASA images.",
+  ) {
     global.fetch = vi.fn().mockResolvedValue({
       ok: false,
       json: vi.fn().mockResolvedValue({ message }),
@@ -72,13 +62,11 @@ describe("NASA Image Search UI", () => {
 
   const getInput = () =>
     screen.getByLabelText(/search term/i) as HTMLInputElement;
-  const getSearchButton = () =>
-    screen.getByRole("button", { name: /search/i });
+  const getSearchButton = () => screen.getByRole("button", { name: /search/i });
 
   // 1) accessibility / initial behavior: button should be disabled with empty query
   it("disables the search button when the query is empty", () => {
     renderWithProviders(<NasaImageSearchPage />);
-
 
     const button = getSearchButton();
     expect(button).toBeDisabled();
@@ -98,14 +86,11 @@ describe("NASA Image Search UI", () => {
     await user.clear(input);
 
     // inline validation message from our client-side logic
-    expect(
-        screen.getByText(/please enter a search term/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/please enter a search term/i)).toBeInTheDocument();
 
     // we never hit the network just from typing/clearing
     expect(fetchSpy).not.toHaveBeenCalled();
-    });
-
+  });
 
   // 3) validation: typing a valid query clears error and enables button
   it("clears validation error and enables the search button when the query becomes valid", () => {
@@ -145,14 +130,10 @@ describe("NASA Image Search UI", () => {
     });
 
     // card content from mocked result
-    expect(
-      await screen.findByText("Mock Galaxy"),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Mock Galaxy")).toBeInTheDocument();
 
     // footer showing total results
-    expect(
-      screen.getByText(/total results found: 1/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/total results found: 1/i)).toBeInTheDocument();
   });
 
   // 5) behavior: API error shows ErrorCard message
@@ -168,8 +149,6 @@ describe("NASA Image Search UI", () => {
     fireEvent.change(input, { target: { value: "nebula" } });
     fireEvent.click(button);
 
-    expect(
-      await screen.findByText(errorMessage),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
   });
 });

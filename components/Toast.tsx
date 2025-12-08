@@ -33,7 +33,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const addToast = (message: string, type: ToastType, duration = 4000) => {
     const id = Math.random().toString(36).substring(2, 9);
     const newToast: ToastMessage = { id, message, type, duration };
-    
+
     setToasts((prev) => [...prev, newToast]);
 
     // Auto-remove after duration
@@ -62,13 +62,23 @@ function ToastContainer() {
   return (
     <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
       {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} onClose={() => removeToast(toast.id)} />
+        <ToastItem
+          key={toast.id}
+          toast={toast}
+          onClose={() => removeToast(toast.id)}
+        />
       ))}
     </div>
   );
 }
 
-function ToastItem({ toast, onClose }: { toast: ToastMessage; onClose: () => void }) {
+function ToastItem({
+  toast,
+  onClose,
+}: {
+  toast: ToastMessage;
+  onClose: () => void;
+}) {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();

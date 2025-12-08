@@ -17,23 +17,23 @@ import { ImageSearchErrorCard } from "./ImageSearchErrorCard";
 
 /**
  * Props for the ImageSearchSection component.
-* The parent (/images/page.tsx) owns the state and API logic,
+ * The parent (/images/page.tsx) owns the state and API logic,
  * and passes everything down as props so this component stays
  * focused on UI rendering and user interactions.
  */
 export interface ImageSearchSectionProps {
-// Controlled search value (text in the input).
+  // Controlled search value (text in the input).
   query: string;
-// Handler called whenever the user types in the search box.
+  // Handler called whenever the user types in the search box.
   onQueryChange: (value: string) => void;
 
-// List of items returned from the NASA Image & Video Library.
+  // List of items returned from the NASA Image & Video Library.
   items: NasaImageItem[];
 
   // Optional total hits value from NASA metadata (can be null if unknown).
   totalHits: number | null;
 
-// True while the initial search request is in progress.
+  // True while the initial search request is in progress.
   loading: boolean;
 
   // True while a "Load more" pagination request is running.
@@ -105,7 +105,8 @@ export function ImageSearchSection({
         <h1 className="text-2xl font-semibold mb-2">NASA Image Search</h1>
         <p className="text-sm text-default-500">
           Search the NASA Image and Video Library for astronomy-related images.
-          Try keywords like &quot;galaxy&quot;, &quot;nebula&quot; or &quot;moon&quot;.
+          Try keywords like &quot;galaxy&quot;, &quot;nebula&quot; or
+          &quot;moon&quot;.
         </p>
       </section>
 
@@ -142,7 +143,7 @@ export function ImageSearchSection({
               type="submit"
               color="primary"
               className="md:w-auto w-full"
-              isDisabled={loading || !query.trim()}   
+              isDisabled={loading || !query.trim()}
             >
               {loading ? "Searching…" : "Search"}
             </Button>
@@ -168,9 +169,11 @@ export function ImageSearchSection({
       {loading && !hasResults && !error && <ImageSearchSkeleton />}
 
       {/* Empty results AFTER a search has been performed */}
-      {!loading && !error && !hasResults && hasSearched && query.trim() !== "" && (
-        <ImageSearchEmptyCard query={query} />
-      )}
+      {!loading &&
+        !error &&
+        !hasResults &&
+        hasSearched &&
+        query.trim() !== "" && <ImageSearchEmptyCard query={query} />}
 
       {/* Hint BEFORE any search is performed */}
       {!loading && !error && !hasResults && !hasSearched && (
@@ -190,10 +193,9 @@ export function ImageSearchSection({
               const data = item.data?.[0];
               const thumbUrl = getThumbnailUrl(item);
               const title = data?.title ?? "Untitled image";
-              const date =
-                data?.date_created
-                  ? new Date(data.date_created).toLocaleDateString()
-                  : "Unknown date";
+              const date = data?.date_created
+                ? new Date(data.date_created).toLocaleDateString()
+                : "Unknown date";
 
               return (
                 <Card

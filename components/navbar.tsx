@@ -17,16 +17,17 @@ import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import {
-  Logo,
-} from "@/components/icons";
+import { Logo } from "@/components/icons";
 
 export const Navbar = () => {
   return (
     <HeroUINavbar maxWidth="xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1 transition-all hover:text-primary hover:drop-shadow-md" href="/">
+          <NextLink
+            className="flex justify-start items-center gap-1 transition-all hover:text-primary hover:drop-shadow-md"
+            href="/"
+          >
             <Logo />
             <p className="font-bold text-inherit">NASA Explorer</p>
           </NextLink>
@@ -55,10 +56,9 @@ export const Navbar = () => {
       >
         <ThemeSwitch />
       </NavbarContent>
-      
-        
-        {/* Only show menu toggle on small screens */}
-        <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
+
+      {/* Only show menu toggle on small screens */}
+      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
         <ThemeSwitch />
         <NavbarMenuToggle />
       </NavbarContent>

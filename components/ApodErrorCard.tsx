@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import {Card, CardBody} from "@heroui/react";
+import { Card, CardBody } from "@heroui/react";
 
 // Branded Error Card
 export function ApodErrorCard({ message }: { message: string }) {

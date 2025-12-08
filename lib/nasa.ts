@@ -14,7 +14,6 @@ const BASE_URL = process.env.NASA_API_BASE ?? "https://api.nasa.gov";
 const IMAGES_BASE_URL =
   process.env.NASA_IMAGES_BASE ?? "https://images-api.nasa.gov";
 
-
 /**
  * Calls NASA's APOD API on the server side.
  *
