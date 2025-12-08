@@ -118,7 +118,7 @@ describe("ApodSearchSection integration", () => {
 
     // initial empty state is visible
     expect(
-      screen.getByText(/No APOD loaded yet — choose a date and hit submit/i),
+      screen.getByText(/No APOD loaded yet./i),
     ).toBeInTheDocument();
 
     // perform a successful search

@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Card, CardBody } from "@nextui-org/react";
 
 export function ImageSearchSkeleton({ count = 6 }: { count?: number }) {
