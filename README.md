@@ -94,49 +94,68 @@ Backlog → In Progress → In Review → Done
 
 ```bash
 group-project-group1-nasa-api/
-├── app/                          # Next.js App Router (pages, routes, layouts)
+├── app/                          
 │   ├── layout.tsx                # Global layout wrapper
 │   ├── error.tsx                 # Global app error boundary (fallback UI)
-│   ├── page.tsx                  # Home page (Landing UI)
+│   ├── page.tsx                  # Home landing page
 │   │
-│   ├── about/                    # Static About Page
-│   │   └── page.tsx
+│   ├── about/
+│   │   └── page.tsx              # Static About page
 │   │
-│   ├── apod/                     # UI Route → NASA APOD Search Form + Results
-│   │   └── page.tsx
+│   ├── apod/
+│   │   └── page.tsx              # APOD search page route
 │   │
-│   └── api/                      # Server-side Route Handlers
+│   └── api/
 │       └── apod/
-│           └── route.ts          # `/api/apod` → calls fetchApod()
+│           └── route.ts          # `/api/apod` → server handler calling fetchApod()
 │
-├── components/                   # Reusable UI Components
-│   ├── ApodSearchSection.tsx     # Main APOD search + results UI
-│   └── error.tsx                 # Reusable card for error messages
+├── components/                   
+│   ├── ApodSearchSection.tsx         # Main APOD form + results UI (Zod + RHF)
+│   ├── ApodSkeleton.tsx              # Loading placeholder UI
+│   ├── ApodEmptyCard.tsx             # Empty state when no APOD result yet
+│   ├── ApodErrorCard.tsx             # APOD-specific error display card
+│   │
+│   ├── ImageSearchSection.tsx        # Image Search form + results UI
+│   ├── ImageSearchSkeleton.tsx       # Loading placeholder for Image Search
+│   ├── ImageSearchEmptyCard.tsx      # Empty UI state for Image Search
+│   ├── ImageSearchErrorCard.tsx      # Error UI for Image Search failures
+│   │
+│   ├── error.tsx                     # Reusable ErrorCard component
+│   ├── Toast.tsx                     # Global toast / alert system
+│   ├── icons.tsx                     # Shared icon components
+│   ├── navbar.tsx                    # Top navigation UI
+│   ├── theme-switch.tsx              # Light/dark mode switch
+│   └── primitives.ts                 # Styled text primitives (title, subtitle)
 │
-├── lib/                          # Server-only logic + API helpers
-│   └── nasa.ts                   # fetchApod() → NASA APOD request logic + validation
+├── lib/
+│   └── nasa.ts                       # fetchApod() logic + server validation
 │
-├── types/                        # TypeScript definitions
-│   ├── nasa.ts                   # ApodResponse + ApodResult interfaces
-│   └── index.ts                  # (optional barrel export)
+├── types/
+│   ├── nasa.ts                       # ApodResponse and shared NASA types
+│   ├── apod.ts                       # APOD Zod schema + ApodFormData
+│   └── index.ts                      # Optional barrel exports
 │
-├── tests/                        # Vitest test suites
-│   ├── fetchApod.test.ts         # Unit tests for fetchApod()
-│   └── api.apod.test.ts          # Integration tests for /api/apod (WIP)
+├── tests/
+│   ├── fetchApod.test.ts             # Unit tests for NASA fetch wrapper
+│   ├── api.apod.test.ts              # Integration test for route handler
+│   ├── ApodSearchSection.test.tsx    # Tests for APOD UI + validation
+│   └── ImageSearchSection.test.tsx   # Tests for Image Search UI
 │
-├── docs/                         # Project docs
-│   ├── setup.md                  # Local development + environment setup
-│   ├── api-notes.md              # NASA API reference notes
-│   └── team.md                   # Roles + sprint responsibilities
+├── docs/
+│   ├── setup.md                      # Local dev setup (Node, pnpm, HeroUI)
+│   ├── api-notes.md                  # Notes on NASA API usage
+│   └── team.md                       # Responsibilities + sprint planning
 │
-├── .env.example                  # Template for required environment variables
-├── README.md                     # Main project documentation
-├── CONTRIBUTING.md               # PR workflow + testing rules
-├── pnpm-lock.yaml                # pnpm dependency lock
-├── tsconfig.json                 # TypeScript config
-├── tailwind.config.ts            # Styling config (HeroUI/Tailwind)
-├── postcss.config.js             # PostCSS config
-└── next.config.js                # Next.js config
+├── .env.example                      
+├── README.md                         
+├── CONTRIBUTING.md                   
+├── pnpm-lock.yaml                    
+├── tsconfig.json                     
+├── tailwind.config.ts                
+├── postcss.config.js                 
+└── next.config.js                    
+
+
 
 ```
 
