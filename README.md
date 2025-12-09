@@ -227,6 +227,43 @@ Any push to the main branch triggers an automatic deploy on Render:
 
 If needed, you can also trigger a Manual Deploy from the Render UI.
 
+## Testing
+
+This project uses **Vitest** and **React Testing Library** for unit and integration tests.
+
+### What’s Covered
+
+- `tests/fetchApod.test.ts`  
+  Unit tests for `fetchApod` in `lib/nasa.ts` (success, error paths, and basic server-side validation).
+
+- `tests/api.apod.test.ts`  
+  Integration tests for the `/api/apod` route handler (status codes, JSON shape, and error responses).
+
+- `tests/ApodSearchSection.test.tsx`  
+  Component tests for the APOD Search UI:
+  - Initial render state (empty form / empty card)
+  - Zod + React Hook Form validation errors
+  - Disabled submit button when the form is invalid
+  - Successful submit calling the backend with a valid date
+
+- `tests/ImageSearchSection.test.tsx`  
+  Component tests for the NASA Image Search UI:
+  - Form rendering and input handling
+  - Loading skeleton / empty state behavior
+  - Error card display when the request fails
+
+> **Note:** Tests mock network requests to NASA; they do **not** call the real API or require a valid `NASA_API_KEY`.
+
+### How to Run Tests
+
+From the project root:
+
+```bash
+pnpm install       # if you haven’t already
+pnpm test          # run the full test suite once
+pnpm test -- --watch     # watch mode (rerun on file changes)
+pnpm test -- --coverage  # generate a coverage report
+```
 # Useful References
 
 - Resource Link
