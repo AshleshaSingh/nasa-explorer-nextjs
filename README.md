@@ -3,10 +3,28 @@
 
 # NASA APOD Explorer — Next.js + TypeScript + NASA API
 ![HomePage](./docs/homepage.png)
-A full-stack web application that fetches NASA’s **Astronomy Picture of the Day (APOD)** using server-side Next.js Route Handlers.  
-Users can enter a date to instantly view the astronomy image/video, explanation, media type, and HD version if available.
+A full-stack web application built with **Next.js 15, TypeScript, HeroUI, and NASA APIs**
+that allows users to explore:
 
-Built as a Web Engineering project — focusing on API integration, UI development, testing, and deployment.
+- **Astronomy Picture of the Day (APOD)** — Search by date
+- **NASA Image & Video Library** — Search multiple images, scroll with pagination
+- **Error Handling, Validation, Toast Notifications & Skeleton Loaders**
+
+This project was developed as part of **CPSC-6175 (Web Engineering)**.
+
+---
+
+## Features Implemented
+
+| Feature | APOD | Image Search |
+|--------|------|--------------|
+| Date-based search | ✔ | — |
+| Keyword search | — | ✔ |
+| Pagination (Load More) | — | ✔ |
+| Client-side validation (Zod + RHF) | ✔ | ✔ |
+| Loading skeletons | ✔ | ✔ |
+| Error boundaries UI | ✔ | ✔ |
+| Toast notifications | ✔ | ✔ |
 
 ---
 
@@ -35,58 +53,6 @@ Built as a Web Engineering project — focusing on API integration, UI developme
 | **Ashlesha Singh** | Project Board + API–UI Integration + Sprint-1 Documentation | Feature Dev (NASA Image Search + Pagination + Search UI Shared) + Code cleanup |
 
 > **Note:** Since John did not contribute during Sprint-1 and Sprint-2, his all tasks were redistributed to maintain workflow continuity.
-
----
-
-# Sprint Task Breakdown
-
-### **Sprint 1 – Setup & Core Development (Completed)**
-
-| Area                | Member(s) Responsible              | Deliverables                                                |
-| ------------------- | ---------------------------------- | ----------------------------------------------------------- |
-| Backend / API       | Khushi + Ashlesha                  | `lib/nasa.ts`, `/api/apod` route                            |
-| Frontend / UI       | Daniel                             | `/apod` form page + loading/error states                    |
-| Testing             | Swati + Khushi                     | Unit test for `fetchApod`, integration test for `/api/apod` |
-| TypeScript Setup    | Swati                              | `/types` folder + interfaces                                |
-| Project Board Setup | Ashlesha                           | GitHub Project board + task breakdown                       |
-| Environment Setup   | Ashlesha                           | `.env.example`, setup instructions                          |
-| Documentation       | Ashlesha                           | `/docs/team.md`, `/docs/api-notes.md`, `CONTRIBUTING.md`    |
-| Error Handling UI   | Reassigned → completed by Ashlesha | Global + component-level error UI                           |
-
----
-
-### **Sprint 2 – Testing, UI Polish, Deployment (Balanced Roles)**
-
-| Area                         | Member(s) Responsible       | Deliverables                                        |
-| ---------------------------- | --------------------------- | --------------------------------------------------- |
-| Feature Dev: Image Search UI | Ashlesha                    | NASA Image Search, pagination, shared UI            |
-| Validation & Form UX         | Daniel                      | Zod + React Hook Form + integration tests           |
-| UI Enhancements              | Khushi                      | Skeletons + empty states + refined APOD UI          |
-| Deployment & Production QA   | Swati                       | Render deployment + environment config + QA         |
-| Final Documentation & Demo   | Team             | README polish + presentation slides + sprint review |
-
----
-
-# Contribution Expectations
-
-### Each team member will:
-
-- Commit code regularly — visible in repo history
-- Write or contribute to tests for assigned features
-- Update docs + project board during progress
-
-### GitHub Project Board Flow:
-
-Backlog → In Progress → In Review → Done
-
-### Code Collaboration Rules
-
-| Rule         | Requirement                       |
-| ------------ | --------------------------------- |
-| Branching    | `feat/...`, `fix/...`, `test/...` |
-| PR Review    | At least one reviewer required    |
-| Merge Policy | No unreviewed merges              |
-| PR Size      | Small, focused, descriptive       |
 
 ---
 
