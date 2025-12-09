@@ -18,13 +18,13 @@ This project was developed as part of **CPSC-6175 (Web Engineering)**.
 
 | Feature | APOD | Image Search |
 |--------|------|--------------|
-| Date-based search | ✔ | — |
-| Keyword search | — | ✔ |
-| Pagination (Load More) | — | ✔ |
-| Client-side validation (Zod + RHF) | ✔ | ✔ |
-| Loading skeletons | ✔ | ✔ |
-| Error boundaries UI | ✔ | ✔ |
-| Toast notifications | ✔ | ✔ |
+| Date-based search | Done | — |
+| Keyword search | — | Done |
+| Pagination (Load More) | — | Done |
+| Client-side validation (Zod + RHF) | Done | Done |
+| Loading skeletons | Done | Done |
+| Error boundaries UI | Done | Done |
+| Toast notifications | Done | Done |
 
 ---
 
