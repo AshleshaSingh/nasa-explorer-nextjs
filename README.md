@@ -2,7 +2,7 @@
 [![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=21646052)
 
 # NASA APOD Explorer — Next.js + TypeScript + NASA API
-
+![HomePage](./docs/homepage.png)
 A full-stack web application that fetches NASA’s **Astronomy Picture of the Day (APOD)** using server-side Next.js Route Handlers.  
 Users can enter a date to instantly view the astronomy image/video, explanation, media type, and HD version if available.
 
