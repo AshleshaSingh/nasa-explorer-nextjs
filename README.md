@@ -264,6 +264,10 @@ pnpm test          # run the full test suite once
 pnpm test -- --watch     # watch mode (rerun on file changes)
 pnpm test -- --coverage  # generate a coverage report
 ```
+
+![Test Results]<img width="547" height="326" alt="Screenshot 2025-12-08 183054" src="https://github.com/user-attachments/assets/415de511-8ff8-4685-b4a8-b2e809bc6d31" />
+
+
 # Useful References
 
 - Resource Link
