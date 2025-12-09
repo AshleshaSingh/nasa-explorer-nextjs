@@ -28,13 +28,13 @@ Built as a Web Engineering project — focusing on API integration, UI developme
 
 | Member             | Sprint 1 Role                                               | Sprint 2 Role                                                 |
 | ------------------ | ----------------------------------------------------------- | ------------------------------------------------------------- |
-| **Khushi Jani**    | Backend Lead (APOD API) + Unit Testing Support              | UI Enhancements (Skeletons, Empty States) + Final QA          |
+| **Khushi Jani**    | Backend Lead (APOD API) + Unit Testing Support              | UI Enhancements (Skeletons, Empty States)                     |
 | **Daniel Ramirez** | Frontend Lead (APOD UI) + UI Documentation                  | Backend Validation (Zod + RHF) + Integration Testing          |
-| **Fnu Swati**      | Testing Lead + TypeScript Setup                             | Feature Dev (NASA Image Search + Pagination) + Documentation  |
+| **Fnu Swati**      | Testing Lead + TypeScript Setup                             | Render deployment + environment config + QA testing           |
 | **John Morales**   | No Sprint-1 output → responsibilities redistributed         | Work reassigned to team (see Sprint 2)                        |
-| **Ashlesha Singh** | Project Board + API–UI Integration + Sprint-1 Documentation | Feature Dev (Search UI Shared) + README Polish + Presentation |
+| **Ashlesha Singh** | Project Board + API–UI Integration + Sprint-1 Documentation | Feature Dev (NASA Image Search + Pagination + Search UI Shared) + Code cleanup |
 
-> **Note:** Since John did not contribute during Sprint-1, his future tasks were redistributed to maintain workflow continuity.
+> **Note:** Since John did not contribute during Sprint-1 and Sprint-2, his all tasks were redistributed to maintain workflow continuity.
 
 ---
 
@@ -62,8 +62,8 @@ Built as a Web Engineering project — focusing on API integration, UI developme
 | Feature Dev: Image Search UI | Ashlesha                    | NASA Image Search, pagination, shared UI            |
 | Validation & Form UX         | Daniel                      | Zod + React Hook Form + integration tests           |
 | UI Enhancements              | Khushi                      | Skeletons + empty states + refined APOD UI          |
-| Deployment & Production QA   | **Swati (previously John)** | Render deployment + environment config + QA         |
-| Final Documentation & Demo   | Ashlesha + Team             | README polish + presentation slides + sprint review |
+| Deployment & Production QA   | Swati                       | Render deployment + environment config + QA         |
+| Final Documentation & Demo   | Team             | README polish + presentation slides + sprint review |
 
 ---
 
